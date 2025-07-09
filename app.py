@@ -2,6 +2,8 @@
 import gradio as gr
 import numpy as np
 import pickle
+from huggingface_hub import login
+import os
 
 # import local dependencies
 import viz
@@ -19,6 +21,8 @@ model_choices = {
     "LLaMa 4 Scout Instruct": "meta-llama/Llama-4-Scout-17B-16E-Instruct",
     "DeepSeek 7B Chat": "deepseek-ai/deepseek-llm-7b-chat"
 }
+
+login(token=os.environ["HUGGINGFACE_TOKEN"])
 
 
 # Gradio Interface
