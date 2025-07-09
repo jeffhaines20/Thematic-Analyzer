@@ -7,6 +7,7 @@ import pickle
 import gradio as gr
 from datetime import datetime
 from transformers.pipelines.text2text_generation import ReturnType
+from spaces import GPU
 import viz
 from run_management import update_run_selector
 import ta_pipeline as ta
@@ -20,6 +21,7 @@ from prompts import (
 )
 
 
+@GPU
 def build_model(use_llama, model_name, testing=False):
     global model, tokenizer
 
