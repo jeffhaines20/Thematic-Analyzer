@@ -64,6 +64,8 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
                 model_load_status = gr.Textbox(label="Status")
                 # load the default model
                 model_utils.build_model(use_llama, "LLaMA 3.1 8B")
+                print("DEBUG: Inside app.py tokenizer is", tokenizer)
+                print("DEBUG: Inside app.py tokenizer.eos_token_id is", getattr(tokenizer, "eos_token_id", "None"))
                 
                 load_model_button.click(
                   fn=model_utils.build_model,
