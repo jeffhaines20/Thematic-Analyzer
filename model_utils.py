@@ -63,8 +63,8 @@ def build_model(use_llama, model_name, testing=False):
             return tokenizer, model
         
         else:
-            print("DEBUG: Inside build_model tokenizer is", tokenizer)
-            print("DEBUG: Inside build_model tokenizer.eos_token_id is", getattr(tokenizer, "eos_token_id", "None"))
+            print("DEBUG: Inside build_model tokenizer is", model_utils.tokenizer)
+            print("DEBUG: Inside build_model tokenizer.eos_token_id is", getattr(model_utils.tokenizer, "eos_token_id", "None"))
             return f"✅ {model_id} model is loaded."
 
     else:
@@ -105,8 +105,8 @@ def make_llm(tokenizer, model, temperature=0, token_limit=-1):
 
 
 def code(file_input, n_codes=-1, temperature=0, user_prompt='', use_example=False, session_runs=[], token_limit=-1, chunk_size=1024, batch_size=1):
-    print("DEBUG: Inside code tokenizer is", tokenizer)
-    print("DEBUG: Inside code tokenizer.eos_token_id is", getattr(tokenizer, "eos_token_id", "None"))
+    print("DEBUG: Inside code tokenizer is", model_utils.tokenizer)
+    print("DEBUG: Inside code tokenizer.eos_token_id is", getattr(model_utils.tokenizer, "eos_token_id", "None"))
     if session_runs is None:
         session_runs = []
 
