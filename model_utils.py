@@ -70,10 +70,7 @@ def build_model(use_llama, model_name, testing=False):
 
 
 
-def make_llm(tokenizer, model, temperature=0, token_limit=-1):
-    print(model.hf_device_map) ### DELETE AFTER DEBUGGING
-    print(next(model.parameters()).device) ### DELETE AFTER DEBUGGING
-    
+def make_llm(tokenizer, model, temperature=0, token_limit=-1):    
     if token_limit < 1:
       generate_kwargs = {
         "pad_token_id": tokenizer.eos_token_id,
