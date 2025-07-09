@@ -6,6 +6,7 @@ sentence-transformers
 seaborn
 plotly
 wordcloud
+nltk
 pyvis
 PyMuPDF
 python-docx
