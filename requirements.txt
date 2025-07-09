@@ -3,6 +3,7 @@ accelerate
 pdf2image
 faiss-cpu
 sentence-transformers
+seaborn
 pyvis
 PyMuPDF
 python-docx
