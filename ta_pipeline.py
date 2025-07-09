@@ -4,7 +4,7 @@ from collections import defaultdict
 from vector_utils import vectorize_text, match_quote_fast
 import fitz
 import math
-from google.colab import userdata
+#from google.colab import userdata
 import gradio as gr
 import time
 import model_utils
