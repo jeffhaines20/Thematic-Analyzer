@@ -11,6 +11,7 @@ from spaces import GPU
 import viz
 from run_management import update_run_selector
 import ta_pipeline as ta
+import model_utils
 from prompts import (
     code_prompt,
     cluster_prompt,
