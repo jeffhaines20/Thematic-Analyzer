@@ -69,7 +69,7 @@ def build_model(use_llama, model_name, testing=False):
 
 
 def make_llm(tokenizer, model, temperature=0, token_limit=-1):
-    print(model.hf_device_map)) ### DELETE AFTER DEBUGGING
+    print(model.hf_device_map) ### DELETE AFTER DEBUGGING
     
     if token_limit < 1:
       generate_kwargs = {
