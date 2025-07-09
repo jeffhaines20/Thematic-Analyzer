@@ -32,8 +32,6 @@ def build_model(use_llama, model_name, testing=False):
     }
     model_id = model_choices[model_name]
 
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-
     if use_llama:
         if use_llama == True:
             print("Loading tokenizer and model...")
@@ -88,7 +86,6 @@ def make_llm(tokenizer, model, temperature=0, token_limit=-1):
       "text-generation",
       model = model,
       tokenizer = tokenizer,
-      device=0,
       **generate_kwargs
     )
 
