@@ -524,4 +524,4 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
 
 
 if __name__ == "__main__":
-    demo.launch(debug=True, share=False)
+    demo.launch(ssr_mode=False)
