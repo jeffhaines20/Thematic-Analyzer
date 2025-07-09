@@ -88,6 +88,7 @@ def make_llm(tokenizer, model, temperature=0, token_limit=-1):
       "text-generation",
       model = model,
       tokenizer = tokenizer,
+      device=0,
       **generate_kwargs
     )
 
