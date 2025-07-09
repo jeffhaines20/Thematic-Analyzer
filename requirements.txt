@@ -5,6 +5,7 @@ faiss-cpu
 sentence-transformers
 seaborn
 plotly
+wordcloud
 pyvis
 PyMuPDF
 python-docx
