@@ -69,7 +69,7 @@ def build_model(use_llama, model_name, testing=False):
         return f"No model was loaded because use_llama = False."
 
 
-
+@GPU
 def make_llm(tokenizer, model, temperature=0, token_limit=-1):    
     if token_limit < 1:
       generate_kwargs = {
