@@ -4,6 +4,7 @@ pdf2image
 faiss-cpu
 sentence-transformers
 seaborn
+plotly
 pyvis
 PyMuPDF
 python-docx
