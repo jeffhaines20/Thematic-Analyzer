@@ -11,7 +11,6 @@ from spaces import GPU
 import viz
 from run_management import update_run_selector
 import ta_pipeline as ta
-from resources import model, tokenizer
 from prompts import (
     code_prompt,
     cluster_prompt,
@@ -19,6 +18,10 @@ from prompts import (
     chat_prompt,
     custom_user_prompt
 )
+
+
+model = None
+tokenizer = None
 
 
 @GPU
@@ -101,8 +104,6 @@ def make_llm(tokenizer, model, temperature=0, token_limit=-1):
 
 
 def code(file_input, n_codes=-1, temperature=0, user_prompt='', use_example=False, session_runs=[], token_limit=-1, chunk_size=1024, batch_size=1):
-    # use saved dictionary to conserve resources
-    global model, tokenizer
     print("DEBUG: Inside code tokenizer is", tokenizer)
     print("DEBUG: Inside code tokenizer.eos_token_id is", getattr(tokenizer, "eos_token_id", "None"))
     if session_runs is None:
@@ -152,7 +153,7 @@ def code(file_input, n_codes=-1, temperature=0, user_prompt='', use_example=Fals
 
     n_codes = int(n_codes * 0.75) #align user-given number of codes with codes per chunk given to llm
     
-    llm = make_llm(tokenizer, model, temperature=temperature, token_limit=token_limit)
+    llm = make_llm(model_utils.tokenizer, model_utils.model, temperature=temperature, token_limit=token_limit)
 
     code_chain = (custom_user_prompt if len(user_prompt) > 0 else code_prompt) | llm
 
@@ -236,7 +237,7 @@ def cluster(full_text, code_dict, max_themes, temperature, use_example, session_
         yield None, None, None, session_runs, f"❌ Error: You must code the text first.", None, None
         return
 
-    llm = make_llm(tokenizer, model, temperature = temperature, token_limit=token_limit)
+    llm = make_llm(model_utils.tokenizer, model_utils.model, temperature = temperature, token_limit=token_limit)
     cluster_chain = cluster_prompt | llm
 
     try:
@@ -333,7 +334,7 @@ def summarize(theme_dict, code_dict, text, temperature, use_example, session_run
         yield None, None, session_runs, f"❌ Error: You must cluster themes first.", None, None
         return
 
-    llm = make_llm(tokenizer, model, temperature = temperature, token_limit=token_limit)
+    llm = make_llm(model_utils.tokenizer, model_utils.model, temperature = temperature, token_limit=token_limit)
     summary_chain = summary_prompt | llm
 
     try:
