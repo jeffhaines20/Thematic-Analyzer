@@ -32,6 +32,8 @@ def build_model(use_llama, model_name, testing=False):
     }
     model_id = model_choices[model_name]
 
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+
     if use_llama:
         if use_llama == True:
             print("Loading tokenizer and model...")
@@ -51,7 +53,7 @@ def build_model(use_llama, model_name, testing=False):
             trust_remote_code=True,
             torch_dtype=torch.float16,
             use_auth_token=True
-        )
+        ).to(device)
 
         if testing:
             return tokenizer, model
