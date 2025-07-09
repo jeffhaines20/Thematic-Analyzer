@@ -7,6 +7,7 @@ seaborn
 plotly
 wordcloud
 nltk
+hdbscan
 pyvis
 PyMuPDF
 python-docx
