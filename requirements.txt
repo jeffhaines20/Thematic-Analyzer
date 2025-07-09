@@ -1,0 +1,12 @@
+bitsandbytes 
+accelerate
+pdf2image
+faiss-cpu
+sentence-transformers
+pyvis
+PyMuPDF
+python-docx
+transformers
+torch
+langchain-huggingface
+https://github.com/explosion/spacy-models/releases/download/en_core_web_md-3.7.1/en_core_web_md-3.7.1-py3-none-any.whl
