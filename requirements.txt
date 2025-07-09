@@ -9,6 +9,7 @@ wordcloud
 nltk
 hdbscan
 langchain
+spaces
 pyvis
 PyMuPDF
 python-docx
