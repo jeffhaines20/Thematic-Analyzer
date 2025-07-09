@@ -42,7 +42,7 @@ def build_model(use_llama, model_name, testing=False):
             bnb_4bit_compute_dtype=torch.float16
         )
 
-        tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True, use_auth_token=True)
+        tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True, token=True)
 
         model = AutoModelForCausalLM.from_pretrained(
             model_id,
@@ -50,7 +50,7 @@ def build_model(use_llama, model_name, testing=False):
             device_map="auto",
             trust_remote_code=True,
             torch_dtype=torch.float16,
-            use_auth_token=True
+            token=True
         )
 
         if testing:
@@ -69,6 +69,8 @@ def build_model(use_llama, model_name, testing=False):
 
 
 def make_llm(tokenizer, model, temperature=0, token_limit=-1):
+    print(model.hf_device_map)) ### DELETE AFTER DEBUGGING
+    
     if token_limit < 1:
       generate_kwargs = {
         "pad_token_id": tokenizer.eos_token_id,
