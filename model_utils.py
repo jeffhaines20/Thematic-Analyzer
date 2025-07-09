@@ -2,7 +2,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 from transformers.pipelines import pipeline
 from langchain_huggingface import HuggingFacePipeline
 import torch
-from google.colab import userdata
+#from google.colab import userdata
 import pickle
 import gradio as gr
 from datetime import datetime
