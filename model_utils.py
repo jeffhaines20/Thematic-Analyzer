@@ -57,8 +57,10 @@ def build_model(use_llama, model_name, testing=False):
 
         if testing:
             return tokenizer, model
-
+        
         else:
+            print("DEBUG: Inside build_model tokenizer is", tokenizer)
+            print("DEBUG: Inside build_model tokenizer.eos_token_id is", getattr(tokenizer, "eos_token_id", "None"))
             return f"✅ {model_id} model is loaded."
 
     else:
@@ -70,7 +72,9 @@ def build_model(use_llama, model_name, testing=False):
 
 
 @GPU
-def make_llm(tokenizer, model, temperature=0, token_limit=-1):    
+def make_llm(tokenizer, model, temperature=0, token_limit=-1):  
+    print("DEBUG: Inside make_llm tokenizer is", tokenizer)
+    print("DEBUG: Inside make_llm tokenizer.eos_token_id is", getattr(tokenizer, "eos_token_id", "None"))
     if token_limit < 1:
       generate_kwargs = {
         "pad_token_id": tokenizer.eos_token_id,
@@ -99,6 +103,8 @@ def make_llm(tokenizer, model, temperature=0, token_limit=-1):
 def code(file_input, n_codes=-1, temperature=0, user_prompt='', use_example=False, session_runs=[], token_limit=-1, chunk_size=1024, batch_size=1):
     # use saved dictionary to conserve resources
     global model, tokenizer
+    print("DEBUG: Inside code tokenizer is", tokenizer)
+    print("DEBUG: Inside code tokenizer.eos_token_id is", getattr(tokenizer, "eos_token_id", "None"))
     if session_runs is None:
         session_runs = []
 
