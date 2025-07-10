@@ -6,6 +6,15 @@ from nltk.tokenize import sent_tokenize
 from collections import defaultdict
 from sentence_transformers import SentenceTransformer
 
+embedder = None
+
+@GPU
+def load_embedder():
+    global embedder
+    if embedder is None:
+        print("[DBG] Loading SentenceTransformer...")
+        embedder = SentenceTransformer("all-MiniLM-L6-v2", device="cpu")  # force CPU
+        print("[DBG] SentenceTransformer is loaded")
 
 
 def prepare_chunks(text, window_size=3):
@@ -70,8 +79,6 @@ def group_chunks_by_cluster(chunks, labels):
 def vectorize_text(text: str, window_size: int=2):
     global embedder
     print("Entered vectorize_text")
-    embedder = SentenceTransformer("all-MiniLM-L6-v2", device="cpu")
-    print("Loaded embedder.")
     chunks, chunk_map = prepare_chunks(text, window_size=window_size)
     index, embeddings = build_faiss_index(chunks, embedder)
 
