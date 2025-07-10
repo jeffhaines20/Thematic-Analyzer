@@ -103,8 +103,7 @@ def make_llm(tokenizer, model, temperature=0, token_limit=-1):
     return llm
 
 
-def code(file_input, n_codes=-1, temperature=0, user_prompt='', use_example=False, session_runs=[], token_limit=-1, chunk_size=1024, batch_size=1):
-    global model, tokenizer
+def code(file_input, n_codes=-1, temperature=0, user_prompt='', use_example=False, session_runs=[], token_limit=-1, chunk_size=1024, batch_size=1, model=model, tokenizer=tokenizer):
     print("DEBUG: Inside code tokenizer is", tokenizer)
     print("DEBUG: Inside code tokenizer.eos_token_id is", getattr(tokenizer, "eos_token_id", "None"))
     if session_runs is None:
@@ -194,10 +193,8 @@ def code(file_input, n_codes=-1, temperature=0, user_prompt='', use_example=Fals
     yield highlighted_html, code_dict, session_runs, coding_status, run_selector_update, run_selector_update, codes
 
 
-def cluster(full_text, code_dict, max_themes, temperature, use_example, session_runs, token_limit, chunk_size):
+def cluster(full_text, code_dict, max_themes, temperature, use_example, session_runs, token_limit, chunk_size, model=model, tokenizer=tokenizer):
     # needs to run the cluster_chain on the code_dict, return a theme_dict, and visualize the clusters
-    global model, tokenizer
-
     if session_runs is None:
         session_runs = []
     
@@ -284,10 +281,8 @@ def cluster(full_text, code_dict, max_themes, temperature, use_example, session_
     yield theme_dict, theme_network_html, html_highlighted_by_theme, session_runs, theme_status, run_selector_update, run_selector_update
 
 
-def summarize(theme_dict, code_dict, text, temperature, use_example, session_runs, token_limit, chunk_size):
+def summarize(theme_dict, code_dict, text, temperature, use_example, session_runs, token_limit, chunk_size, model=model, tokenizer=tokenizer):
     # needs to run the summary_chain on theme_dict, then combine all dictionaries and return a table of the combined_dict
-    global model, tokenizer
-
     if session_runs is None:
         session_runs = []
 
