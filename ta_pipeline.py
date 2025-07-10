@@ -197,9 +197,6 @@ def code_text(text, tokenizer, code_chain, n_codes=-1, marker=code_marker, chunk
 
 
 def parse_codes(codes: list[dict], text: str) -> dict:
-    import re
-    from collections import defaultdict
-
     temp_dict = defaultdict(list)
 
     pattern = r"^\s*\d+\.\s*(.+?)\s*\|\s*(?:<code>)?(.+?)(?:</code>)?\s*\|\s*(\d+)\s*$"
@@ -353,22 +350,3 @@ def combine(theme_dict, summary_dict, code_dict) -> list[dict]:
           continue
 
     return combined_dict
-
-
-def iterate_ta(iters: int, text, prompts=[code_prompt], n_codes=[-1], markers=[code_marker], chunk_sizes=[1024]):
-    # allows for multiple chains to be run sequentially, with different parameter values
-    # prompt, n_codes, markers, and chunk_size must be multiples of iters
-    assert len(n_codes) == iters, "List of number of tags is not the same as the number of iterations."
-    assert len(markers) == iters, "List of formats is not the same as the number of iterations."
-    assert len(chunk_sizes) == iters, "List of chunk_sizes is not the same as the number of iterations."
-    assert len(prompts) == iters, "List of prompts is not the same as the number of iterations."
-
-    # output is a list of code dictionaries
-    output = []
-
-    for i in range(iters):
-        print(f"Iteration: {i+1}")
-        codes = code_text(text, n_codes = n_codes[i], marker = markers[i], chunk_size = chunk_sizes[i])
-        output.append(parse_codes(codes, text))
-
-    return output
