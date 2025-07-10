@@ -20,10 +20,6 @@ from prompts import (
 )
 
 
-model = None
-tokenizer = None
-
-
 @GPU
 def build_model(use_llama, model_name, testing=False):
     model = None
