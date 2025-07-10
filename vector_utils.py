@@ -8,7 +8,7 @@ from sentence_transformers import SentenceTransformer
 
 embedder = None
 
-@GPU
+
 def load_embedder():
     global embedder
     if embedder is None:
