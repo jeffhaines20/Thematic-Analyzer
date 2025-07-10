@@ -26,7 +26,7 @@ model_choices = {
 
 login(token=os.environ["HUGGINGFACE_TOKEN"])
 
-default_model = "LLaMa 4 Scout Instruct"
+default_model = "DeepSeek 7B Chat"
 
 model_utils.build_model(True, default_model)
 vector_utils.load_embedder()
