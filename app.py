@@ -25,7 +25,6 @@ model_choices = {
 
 login(token=os.environ["HUGGINGFACE_TOKEN"])
 
-print("Is CUDA available (main process)?", torch.cuda.is_available())
 
 # Gradio Interface
 with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
