@@ -50,8 +50,7 @@ This Hugging Face Space allows you to upload a document and automatically extrac
 ├── doc_utils.py            # Loading and downloading html   
 ├── model_utils.py          # LLM loading and wrappers  
 ├── ner_utils.py            # Working with Named Entity Recognition  
-├── prompts.py              # Coding, theme clustering, and summarizing prompts  
-├── resources.py            # Holder for model and tokenizer  
+├── prompts.py              # Coding, theme clustering, and summarizing prompts   
 ├── run_management.py       # Functions for aggregating multiple LLM outputs  
 ├── ta_pipeline.py          # Text loading, preprocessing, chunking, llm calls, and chat functions   
 ├── vector_utils.py         # Vectorizing the text for retrieval augmented generation  
