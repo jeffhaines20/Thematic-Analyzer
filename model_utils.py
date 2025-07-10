@@ -76,7 +76,6 @@ def build_model(use_llama, model_name, testing=False):
 
 @GPU
 def make_llm(tokenizer, model, temperature=0, token_limit=-1): 
-    global model, tokenizer
     print("DEBUG: Inside make_llm tokenizer is", tokenizer)
     print("DEBUG: Inside make_llm tokenizer.eos_token_id is", getattr(tokenizer, "eos_token_id", "None"))
     if token_limit < 1:
