@@ -68,7 +68,7 @@ def build_model(use_llama, model_name, testing=False):
         tokenizer = None
         model = None
 
-        return None, None, f"No model was loaded because use_llama = False."
+        return tokenizer, model, f"No model was loaded because use_llama = False."
 
 
 @GPU
@@ -151,7 +151,7 @@ def code(file_input, model, tokenizer, n_codes=-1, temperature=0, user_prompt=''
 
     n_codes = int(n_codes * 0.75) #align user-given number of codes with codes per chunk given to llm
     
-    llm = make_llm(temperature=temperature, token_limit=token_limit)
+    llm = make_llm(model, tokenizer, temperature=temperature, token_limit=token_limit)
 
     code_chain = (custom_user_prompt if len(user_prompt) > 0 else code_prompt) | llm
 
@@ -234,7 +234,7 @@ def cluster(full_text, model, tokenizer, code_dict, max_themes, temperature, use
         yield None, None, None, session_runs, f"❌ Error: You must code the text first.", None, None
         return
 
-    llm = make_llm(tokenizer, model, temperature = temperature, token_limit=token_limit)
+    llm = make_llm(model, tokenizer, temperature = temperature, token_limit=token_limit)
     cluster_chain = cluster_prompt | llm
 
     try:
@@ -329,7 +329,7 @@ def summarize(theme_dict, code_dict, model, tokenizer, text, temperature, use_ex
         yield None, None, session_runs, f"❌ Error: You must cluster themes first.", None, None
         return
 
-    llm = make_llm(tokenizer, model, temperature = temperature, token_limit=token_limit)
+    llm = make_llm(model, tokenizer, temperature = temperature, token_limit=token_limit)
     summary_chain = summary_prompt | llm
 
     try:
