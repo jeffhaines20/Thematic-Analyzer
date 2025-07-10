@@ -7,6 +7,7 @@ from collections import defaultdict
 from sentence_transformers import SentenceTransformer
 
 def prepare_chunks(text, window_size=3):
+    print("Entered prepare_chunks")
     sentences = sent_tokenize(text)
     chunks = []
     chunk_map = []
@@ -20,6 +21,7 @@ def prepare_chunks(text, window_size=3):
     return chunks, chunk_map
 
 def build_faiss_index(chunks, embedder):
+    print("Entered build_faiss_index")
     embeddings = embedder.encode(chunks, convert_to_numpy=True)
     dim = embeddings.shape[1]
     index = faiss.IndexFlatL2(dim)
@@ -59,7 +61,9 @@ def group_chunks_by_cluster(chunks, labels):
     return dict(clustered)
 
 def vectorize_text(text: str, window_size: int=2):
+    print("Entered vectorize_text")
     embedder = SentenceTransformer("all-MiniLM-L6-v2")
+    print("Loaded embedder.")
     chunks, chunk_map = prepare_chunks(text, window_size=window_size)
     index, embeddings = build_faiss_index(chunks, embedder)
 
