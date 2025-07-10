@@ -25,7 +25,21 @@ model_choices = {
 
 login(token=os.environ["HUGGINGFACE_TOKEN"])
 
+model, tokenizer, initial_model_status = model_utils.build_model(True, "LLaMA 3.1 8B")
 
+def code_wrapper(file_input, n_codes, temperature, user_prompt, use_example, session_runs, token_limit, chunk_size):
+    return model_utils.code(model, tokenizer, file_input, n_codes, temperature, user_prompt, use_example, session_runs, token_limit, chunk_size)
+
+def cluster_wrapper(full_text, code_dict_state, max_themes, temperature, use_example, session_runs, token_limit, chunk_size):
+    return model_utils.cluster(model, tokenizer, full_text, code_dict_state, max_themes, temperature, use_example, session_runs, token_limit, chunk_size)
+
+def summarize_wrapper(theme_dict_state, code_dict_state, full_text, temperature, use_example, session_runs, token_limit, chunk_size):
+    return model_utils.summarize(model, tokenizer, theme_dict_state, code_dict_state, full_text, temperature, use_example, session_runs, token_limit, chunk_size)
+
+def chat_wrapper():
+    return ta.open_chat(model, tokenizer)
+
+    
 # Gradio Interface
 with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
     gr.Markdown("## 🧠 Thematic Analyzer")
@@ -302,7 +316,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
         send_btn = gr.Button("Send", visible=False)
 
         chat_button.click(
-            fn=ta.open_chat,
+            fn=chat_wrapper,
             inputs=[],
             outputs=[llm_state, chatbot_box, user_msg, send_btn])
 
@@ -488,7 +502,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
 
     # --- Core Button Logic ---
     code_event = code_button.click(
-        fn=model_utils.code,
+        fn=code_wrapper,
         inputs=[file_input, n_codes, temperature, user_prompt, use_example, session_runs, token_limit, chunk_size],
         outputs=[html_code_output, code_dict_state, session_runs, coding_status, run_selector, available_runs, raw_llm_output],
         )
@@ -500,7 +514,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
     )
 
     cluster_event = cluster_button.click(
-            fn=model_utils.cluster,
+            fn=cluster_wrapper,
             inputs=[full_text, code_dict_state, max_themes, temperature, use_example, session_runs, token_limit, chunk_size],
             outputs=[theme_dict_state, theme_code_network_html, html_highlighted_by_theme, session_runs, theme_status, run_selector, available_runs],
         )
@@ -512,7 +526,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
     )
 
     summary_event = summary_button.click(
-            fn=model_utils.summarize,
+            fn=summarize_wrapper,
             inputs=[theme_dict_state, code_dict_state, full_text, temperature, use_example, session_runs, token_limit, chunk_size],
             outputs=[combined_dict_state, theme_df_html, session_runs, summarizing_status, run_selector, available_runs],
         )
