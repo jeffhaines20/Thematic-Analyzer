@@ -100,7 +100,7 @@ def make_llm(model, tokenizer, temperature=0, token_limit=-1):
     return llm
 
 
-def code(file_input, n_codes=-1, temperature=0, user_prompt='', use_example=False, session_runs=[], token_limit=-1, chunk_size=1024, batch_size=1):
+def code(file_input, model, tokenizer, n_codes=-1, temperature=0, user_prompt='', use_example=False, session_runs=[], token_limit=-1, chunk_size=1024, batch_size=1):
     #print("DEBUG: Inside code tokenizer is", tokenizer)
     #print("DEBUG: Inside code tokenizer.eos_token_id is", getattr(tokenizer, "eos_token_id", "None"))
     if session_runs is None:
@@ -191,7 +191,7 @@ def code(file_input, n_codes=-1, temperature=0, user_prompt='', use_example=Fals
 
 
 @GPU
-def cluster(full_text, code_dict, max_themes, temperature, use_example, session_runs, token_limit, chunk_size, model=model, tokenizer=tokenizer):
+def cluster(full_text, model, tokenizer, code_dict, max_themes, temperature, use_example, session_runs, token_limit, chunk_size):
     # needs to run the cluster_chain on the code_dict, return a theme_dict, and visualize the clusters
     if session_runs is None:
         session_runs = []
@@ -280,7 +280,7 @@ def cluster(full_text, code_dict, max_themes, temperature, use_example, session_
 
 
 @GPU
-def summarize(theme_dict, code_dict, text, temperature, use_example, session_runs, token_limit, chunk_size, model=model, tokenizer=tokenizer):
+def summarize(theme_dict, code_dict, model, tokenizer, text, temperature, use_example, session_runs, token_limit, chunk_size):
     # needs to run the summary_chain on theme_dict, then combine all dictionaries and return a table of the combined_dict
     if session_runs is None:
         session_runs = []
