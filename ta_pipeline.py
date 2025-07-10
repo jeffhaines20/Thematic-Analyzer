@@ -106,7 +106,8 @@ def parse_chat(answer: str, marker: str=chat_marker) -> str:
     return output 
 
 
-def open_chat():
+@GPU
+def open_chat(model, tokenizer):
     llm = model_utils.make_llm(model, tokenizer, temperature=0)
     return llm, gr.update(visible=False), gr.update(visible=True), gr.update(visible=True)
 
