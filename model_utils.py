@@ -26,7 +26,8 @@ tokenizer = None
 
 @GPU
 def build_model(use_llama, model_name, testing=False):
-    global model, tokenizer
+    model = None
+    tokenizer = None
 
     # Model options
     model_choices = {
@@ -59,24 +60,23 @@ def build_model(use_llama, model_name, testing=False):
         )
 
         if testing:
-            return tokenizer, model
+            return tokenizer, model, None
         
         else:
             print("DEBUG: Inside build_model tokenizer is", tokenizer)
             print("DEBUG: Inside build_model tokenizer.eos_token_id is", getattr(tokenizer, "eos_token_id", "None"))
-            return f"✅ {model_id} model is loaded."
+            return tokenizer, model, f"✅ {model_id} model is loaded."
 
     else:
         # just pass placeholders to the tokenizer and model
         tokenizer = None
         model = None
 
-        return f"No model was loaded because use_llama = False."
+        return None, None, f"No model was loaded because use_llama = False."
 
 
 @GPU
-def make_llm(temperature=0, token_limit=-1): 
-    global model, tokenizer
+def make_llm(model, tokenizer, temperature=0, token_limit=-1): 
     print("DEBUG: Inside make_llm tokenizer is", tokenizer)
     print("DEBUG: Inside make_llm tokenizer.eos_token_id is", getattr(tokenizer, "eos_token_id", "None"))
     if token_limit < 1:
