@@ -24,10 +24,6 @@ model_choices = {
 
 login(token=os.environ["HUGGINGFACE_TOKEN"])
 
-model_state = gr.State()
-tokenizer_state = gr.State()
-initial_model_status = gr.State(value="❌ Model not loaded.")
-
 
 # Gradio Interface
 with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
@@ -40,6 +36,8 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
     combined_dict_state = gr.State()
     summary_dict_state = gr.State()
     session_runs = gr.State([])  # save each run for future use
+    model_state = gr.State()
+    tokenizer_state = gr.State()
 
     with gr.Accordion("❓ Help", open=False):
         gr.Markdown('''The general workflow of the app is to
@@ -65,7 +63,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
                 selected_model = gr.Radio(choices=list(model_choices.keys()), value="LLaMA 3.1 8B", label="Select Model")
                 load_model_button = gr.Button("Load Selected Model")
                 gr.HTML("<span title='Load the selected model. Note that some models may take several minutes to load.'>ℹ️</span>")
-                model_load_status = gr.Textbox(label="Model Status", value=initial_model_status)   
+                model_load_status = gr.Textbox(label="Model Status", value="❌ No model loaded.")   
                 print("DEBUG: Inside app.py tokenizer is", tokenizer_state)
                 print("DEBUG: Inside app.py tokenizer.eos_token_id is", getattr(tokenizer_state, "eos_token_id", "None"))
                 
