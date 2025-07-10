@@ -22,7 +22,7 @@ from prompts import (
 model = None
 tokenizer = None
 
-@GPU
+
 def build_model(use_llama, model_name):
     # Model options
     model_choices = {
@@ -66,7 +66,7 @@ def build_model(use_llama, model_name):
         return model, tokenizer, f"No model was loaded because use_llama = False."
 
 
-@GPU
+
 def make_llm(model, tokenizer, temperature=0, token_limit=-1): 
     print("DEBUG: Inside make_llm tokenizer is", tokenizer)
     print("DEBUG: Inside make_llm tokenizer.eos_token_id is", getattr(tokenizer, "eos_token_id", "None"))
