@@ -26,6 +26,7 @@ model_choices = {
 login(token=os.environ["HUGGINGFACE_TOKEN"])
 
 model, tokenizer, initial_model_status = model_utils.build_model(True, "LLaMA 3.1 8B")
+model.to("cuda")
 
 def code_wrapper(file_input, n_codes, temperature, user_prompt, use_example, session_runs, token_limit, chunk_size):
     return model_utils.code(model, tokenizer, file_input, n_codes, temperature, user_prompt, use_example, session_runs, token_limit, chunk_size)
