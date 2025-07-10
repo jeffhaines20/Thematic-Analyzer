@@ -37,8 +37,6 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
     combined_dict_state = gr.State()
     summary_dict_state = gr.State()
     session_runs = gr.State([])  # save each run for future use
-    model_state = gr.State()
-    tokenizer_state = gr.State()
 
     with gr.Accordion("❓ Help", open=False):
         gr.Markdown('''The general workflow of the app is to
@@ -71,7 +69,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
                 load_model_button.click(
                   fn=model_utils.build_model,
                   inputs=[use_llm, selected_model],
-                  outputs=[tokenizer_state, model_state, model_load_status]
+                  outputs=[model_load_status]
                 )
 
             with gr.Row():
@@ -491,7 +489,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
     # --- Core Button Logic ---
     code_event = code_button.click(
         fn=model_utils.code,
-        inputs=[file_input, model_state, tokenizer_state, n_codes, temperature, user_prompt, use_example, session_runs, token_limit, chunk_size],
+        inputs=[file_input, n_codes, temperature, user_prompt, use_example, session_runs, token_limit, chunk_size],
         outputs=[html_code_output, code_dict_state, session_runs, coding_status, run_selector, available_runs, raw_llm_output],
         )
 
@@ -503,7 +501,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
 
     cluster_event = cluster_button.click(
             fn=model_utils.cluster,
-            inputs=[full_text, model_state, tokenizer_state, code_dict_state, max_themes, temperature, use_example, session_runs, token_limit, chunk_size],
+            inputs=[full_text, code_dict_state, max_themes, temperature, use_example, session_runs, token_limit, chunk_size],
             outputs=[theme_dict_state, theme_code_network_html, html_highlighted_by_theme, session_runs, theme_status, run_selector, available_runs],
         )
 
@@ -515,7 +513,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
 
     summary_event = summary_button.click(
             fn=model_utils.summarize,
-            inputs=[theme_dict_state, code_dict_state, model_state, tokenizer_state, full_text, temperature, use_example, session_runs, token_limit, chunk_size],
+            inputs=[theme_dict_state, code_dict_state, full_text, temperature, use_example, session_runs, token_limit, chunk_size],
             outputs=[combined_dict_state, theme_df_html, session_runs, summarizing_status, run_selector, available_runs],
         )
 
