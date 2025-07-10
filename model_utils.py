@@ -75,7 +75,8 @@ def build_model(use_llama, model_name, testing=False):
 
 
 @GPU
-def make_llm(tokenizer, model, temperature=0, token_limit=-1): 
+def make_llm(temperature=0, token_limit=-1): 
+    global model, tokenizer
     print("DEBUG: Inside make_llm tokenizer is", tokenizer)
     print("DEBUG: Inside make_llm tokenizer.eos_token_id is", getattr(tokenizer, "eos_token_id", "None"))
     if token_limit < 1:
@@ -103,10 +104,9 @@ def make_llm(tokenizer, model, temperature=0, token_limit=-1):
     return llm
 
 
-@GPU
-def code(file_input, n_codes=-1, temperature=0, user_prompt='', use_example=False, session_runs=[], token_limit=-1, chunk_size=1024, batch_size=1, model=model, tokenizer=tokenizer):
-    print("DEBUG: Inside code tokenizer is", tokenizer)
-    print("DEBUG: Inside code tokenizer.eos_token_id is", getattr(tokenizer, "eos_token_id", "None"))
+def code(file_input, n_codes=-1, temperature=0, user_prompt='', use_example=False, session_runs=[], token_limit=-1, chunk_size=1024, batch_size=1):
+    #print("DEBUG: Inside code tokenizer is", tokenizer)
+    #print("DEBUG: Inside code tokenizer.eos_token_id is", getattr(tokenizer, "eos_token_id", "None"))
     if session_runs is None:
         session_runs = []
 
@@ -154,7 +154,7 @@ def code(file_input, n_codes=-1, temperature=0, user_prompt='', use_example=Fals
 
     n_codes = int(n_codes * 0.75) #align user-given number of codes with codes per chunk given to llm
     
-    llm = make_llm(tokenizer, model, temperature=temperature, token_limit=token_limit)
+    llm = make_llm(temperature=temperature, token_limit=token_limit)
 
     code_chain = (custom_user_prompt if len(user_prompt) > 0 else code_prompt) | llm
 
