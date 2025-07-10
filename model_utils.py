@@ -25,6 +25,8 @@ tokenizer = None
 
 def build_model(use_llama, model_name):
     # Model options
+    global model, tokenizer
+    
     model_choices = {
         "LLaMA 3.1 8B": "meta-llama/Meta-Llama-3.1-8B-Instruct",
         "LLaMA 3.3": "meta-llama/Meta-Llama-3-8B-v3.3",
@@ -56,14 +58,14 @@ def build_model(use_llama, model_name):
 
         print("DEBUG: Inside build_model tokenizer is", tokenizer)
         print("DEBUG: Inside build_model tokenizer.eos_token_id is", getattr(tokenizer, "eos_token_id", "None"))
-        return model, tokenizer, f"✅ {model_id} model is loaded."
+        return f"✅ {model_id} model is loaded."
 
     else:
         # just pass placeholders to the tokenizer and model
         tokenizer = None
         model = None
 
-        return model, tokenizer, f"No model was loaded because use_llama = False."
+        return f"No model was loaded because use_llama = False."
 
 
 
@@ -96,9 +98,10 @@ def make_llm(model, tokenizer, temperature=0, token_limit=-1):
 
 
 @GPU
-def code(model, tokenizer, file_input, n_codes=-1, temperature=0, user_prompt='', use_example=False, session_runs=[], token_limit=-1, chunk_size=1024, batch_size=1):
+def code(file_input, n_codes=-1, temperature=0, user_prompt='', use_example=False, session_runs=[], token_limit=-1, chunk_size=1024, batch_size=1):
+    global model, tokenizer
     #print("DEBUG: Inside code tokenizer is", tokenizer)
-    #print("DEBUG: Inside code tokenizer.eos_token_id is", getattr(tokenizer, "eos_token_id", "None"))
+    print("DEBUG: Inside code tokenizer.eos_token_id is", getattr(tokenizer, "eos_token_id", "None"))
     if session_runs is None:
         session_runs = []
 
@@ -187,7 +190,8 @@ def code(model, tokenizer, file_input, n_codes=-1, temperature=0, user_prompt=''
 
 
 @GPU
-def cluster(mode, tokenizer, full_text, code_dict, max_themes, temperature, use_example, session_runs, token_limit, chunk_size):
+def cluster(full_text, code_dict, max_themes, temperature, use_example, session_runs, token_limit, chunk_size):
+    global model, tokenizer
     # needs to run the cluster_chain on the code_dict, return a theme_dict, and visualize the clusters
     if session_runs is None:
         session_runs = []
@@ -276,7 +280,8 @@ def cluster(mode, tokenizer, full_text, code_dict, max_themes, temperature, use_
 
 
 @GPU
-def summarize(model, tokenizer, theme_dict, code_dict, text, temperature, use_example, session_runs, token_limit, chunk_size):
+def summarize(theme_dict, code_dict, text, temperature, use_example, session_runs, token_limit, chunk_size):
+    global model, tokenizer
     # needs to run the summary_chain on theme_dict, then combine all dictionaries and return a table of the combined_dict
     if session_runs is None:
         session_runs = []
