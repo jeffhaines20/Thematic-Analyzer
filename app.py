@@ -13,7 +13,8 @@ import ner_utils as ner
 import run_management as rm
 import doc_utils as du
 import model_utils
-from config import use_llama, model_path
+import vector_utils
+
 
 # Model options
 model_choices = {
@@ -28,7 +29,7 @@ login(token=os.environ["HUGGINGFACE_TOKEN"])
 default_model = "LLaMA 3.1 8B"
 
 model_utils.build_model(True, default_model)
-
+vector_utils.load_embedder()
     
 # Gradio Interface
 with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
