@@ -107,8 +107,8 @@ def parse_chat(answer: str, marker: str=chat_marker) -> str:
 
 
 @GPU
-def open_chat(model, tokenizer):
-    llm = model_utils.make_llm(model, tokenizer, temperature=0)
+def open_chat():
+    llm = model_utils.make_llm(model_utils.model, model_utils.tokenizer, temperature=0)
     return llm, gr.update(visible=False), gr.update(visible=True), gr.update(visible=True)
 
 
@@ -118,6 +118,7 @@ def handle_chat(question, text, llm):
     return parse_chat(reply[0])
 
 
+@GPU
 def chunk_text_by_tokens(text, tokenizer, max_tokens=1024, overlap=100):
     tokens = tokenizer.encode(text, add_special_tokens=False)
     chunks = []
