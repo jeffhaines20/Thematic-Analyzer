@@ -100,6 +100,7 @@ def make_llm(model, tokenizer, temperature=0, token_limit=-1):
     return llm
 
 
+@GPU
 def code(file_input, model, tokenizer, n_codes=-1, temperature=0, user_prompt='', use_example=False, session_runs=[], token_limit=-1, chunk_size=1024, batch_size=1):
     #print("DEBUG: Inside code tokenizer is", tokenizer)
     #print("DEBUG: Inside code tokenizer.eos_token_id is", getattr(tokenizer, "eos_token_id", "None"))
