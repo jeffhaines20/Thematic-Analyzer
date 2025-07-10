@@ -63,8 +63,8 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
                 load_model_button = gr.Button("Load Selected Model")
                 gr.HTML("<span title='Load the selected model. Note that some models may take several minutes to load.'>ℹ️</span>")
                 model_load_status = gr.Textbox(label="Model Status", value="❌ No model loaded.")   
-                print("DEBUG: Inside app.py tokenizer is", tokenizer_state)
-                print("DEBUG: Inside app.py tokenizer.eos_token_id is", getattr(tokenizer_state, "eos_token_id", "None"))
+                #print("DEBUG: Inside app.py tokenizer is", tokenizer_state)
+                #print("DEBUG: Inside app.py tokenizer.eos_token_id is", getattr(tokenizer_state, "eos_token_id", "None"))
                 
                 load_model_button.click(
                   fn=model_utils.build_model,
@@ -303,7 +303,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
 
         chat_button.click(
             fn=ta.open_chat,
-            inputs=[model_state, tokenizer_state],
+            inputs=[],
             outputs=[llm_state, chatbot_box, user_msg, send_btn])
 
         send_btn.click(
