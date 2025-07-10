@@ -24,6 +24,11 @@ model_choices = {
 
 login(token=os.environ["HUGGINGFACE_TOKEN"])
 
+# load the default model
+model, tokenizer, initial_model_status = model_utils.build_model(use_llama=True, model_name="LLaMA 3.1 8B")
+model_state = gr.State(model)
+tokenizer_state = gr.State(tokenizer)
+
 
 # Gradio Interface
 with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
@@ -61,17 +66,14 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
                 selected_model = gr.Radio(choices=list(model_choices.keys()), value="LLaMA 3.1 8B", label="Select Model")
                 load_model_button = gr.Button("Load Selected Model")
                 gr.HTML("<span title='Load the selected model. Note that some models may take several minutes to load.'>ℹ️</span>")
-                model_load_status = gr.Textbox(label="Status")
-                # load the default model
-                model_utils.build_model(use_llama, "LLaMA 3.1 8B")
-                from model_utils import tokenizer
-                print("DEBUG: Inside app.py tokenizer is", tokenizer)
-                print("DEBUG: Inside app.py tokenizer.eos_token_id is", getattr(tokenizer, "eos_token_id", "None"))
+                model_load_status = gr.Textbox(label="Model Status", value=initial_model_status)
+                print("DEBUG: Inside app.py tokenizer is", tokenizer_state)
+                print("DEBUG: Inside app.py tokenizer.eos_token_id is", getattr(tokenizer_state, "eos_token_id", "None"))
                 
                 load_model_button.click(
                   fn=model_utils.build_model,
                   inputs=[use_llm, selected_model],
-                  outputs=[model_load_status]
+                  outputs=[tokenizer_state, model_state, model_load_status]
                 )
 
             with gr.Row():
@@ -305,6 +307,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
 
         chat_button.click(
             fn=ta.open_chat,
+            inputs=[model_state, tokenizer_state],
             outputs=[llm_state, chatbot_box, user_msg, send_btn])
 
         send_btn.click(
@@ -406,7 +409,6 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
         outputs=[run_view]
         )
 
-
         agg_status = gr.Markdown("Click the button to aggregate runs.")
 
         with gr.Row():
@@ -491,7 +493,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
     # --- Core Button Logic ---
     code_event = code_button.click(
         fn=model_utils.code,
-        inputs=[file_input, n_codes, temperature, user_prompt, use_example, session_runs, token_limit, chunk_size],
+        inputs=[file_input, model_state, tokenizer_state, n_codes, temperature, user_prompt, use_example, session_runs, token_limit, chunk_size],
         outputs=[html_code_output, code_dict_state, session_runs, coding_status, run_selector, available_runs, raw_llm_output],
         )
 
@@ -503,7 +505,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
 
     cluster_event = cluster_button.click(
             fn=model_utils.cluster,
-            inputs=[full_text, code_dict_state, max_themes, temperature, use_example, session_runs, token_limit, chunk_size],
+            inputs=[full_text, model_state, tokenizer_state, code_dict_state, max_themes, temperature, use_example, session_runs, token_limit, chunk_size],
             outputs=[theme_dict_state, theme_code_network_html, html_highlighted_by_theme, session_runs, theme_status, run_selector, available_runs],
         )
 
@@ -515,7 +517,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
 
     summary_event = summary_button.click(
             fn=model_utils.summarize,
-            inputs=[theme_dict_state, code_dict_state, full_text, temperature, use_example, session_runs, token_limit, chunk_size],
+            inputs=[theme_dict_state, code_dict_state, model_state, tokenizer_state, full_text, temperature, use_example, session_runs, token_limit, chunk_size],
             outputs=[combined_dict_state, theme_df_html, session_runs, summarizing_status, run_selector, available_runs],
         )
 
