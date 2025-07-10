@@ -198,6 +198,7 @@ def code_text(text, tokenizer, code_chain, n_codes=-1, marker=code_marker, chunk
         j += 1
 
 
+@GPU
 def parse_codes(codes: list[dict], text: str) -> dict:
     temp_dict = defaultdict(list)
 
@@ -223,6 +224,7 @@ def parse_codes(codes: list[dict], text: str) -> dict:
         print(f"Found {len(possible_hallucinations)} possible hallucinations. Searching for actual quotes...")
         chunks, index, embeddings, embedder = vectorize_text(text)
         resolved = 0
+        print("Vectorizing is complete.")
 
         for h in possible_hallucinations:
             quote = match_quote_fast(h["sentence"], chunks, index, embeddings, embedder, threshold=0.65)
