@@ -81,7 +81,7 @@ def load_doc(file_input, path=False):
     return text
 
 
-@GPU
+@GPU(duration=120)
 def chat_with_text(question: str, text: str, chat_chain, already_vectorized: bool = False, threshold: float=0.5) -> list:
     if not already_vectorized:
         chunks, index, embeddings, embedder = vectorize_text(text)
@@ -106,7 +106,7 @@ def parse_chat(answer: str, marker: str=chat_marker) -> str:
     return output 
 
 
-@GPU
+@GPU(duration=120)
 def open_chat():
     llm = model_utils.make_llm(model_utils.model, model_utils.tokenizer, temperature=0)
     return llm, gr.update(visible=False), gr.update(visible=True), gr.update(visible=True)
@@ -134,7 +134,7 @@ def chunk_text_by_tokens(text, tokenizer, max_tokens=1024, overlap=100):
     return chunks
 
 
-@GPU
+@GPU(duration=600)
 def code_text(text, tokenizer, code_chain, n_codes=-1, marker=code_marker, chunk_size=1024, user_prompt='', batch_size=6, progress=gr.Progress()):
     chunks = chunk_text_by_tokens(text, tokenizer, max_tokens=chunk_size)
     n_chunks = len(chunks)
@@ -238,7 +238,7 @@ def parse_codes(codes: list[dict], text: str) -> dict:
     return dict(temp_dict)
 
 
-@GPU
+@GPU(duration=300)
 def develop_themes(codes: str, tokenizer, cluster_chain, marker: str=cluster_marker, max_themes: int=-1, chunk_size:int=1024, progress=gr.Progress()) -> list:
     chunks = chunk_text_by_tokens(codes, tokenizer, max_tokens=chunk_size)
     n_chunks = len(chunks)
@@ -285,7 +285,7 @@ def parse_themes(themes: list[dict]) -> dict[str, list[str]]:
     return dict(theme_dict)
 
 
-@GPU
+@GPU(duration=300)
 def summarize_themes(theme_dict: list[dict], text: str, tokenizer, summary_chain, marker: str=summary_marker, chunk_size: int=1024, progress=gr.Progress()) -> list:
     chunks = chunk_text_by_tokens(text, tokenizer, max_tokens=chunk_size)
     n_chunks = len(chunks)
