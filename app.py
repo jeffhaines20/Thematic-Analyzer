@@ -26,7 +26,7 @@ login(token=os.environ["HUGGINGFACE_TOKEN"])
 
 model_state = gr.State()
 tokenizer_state = gr.State()
-model_status = gr.State(value="❌ Model not loaded.")
+initial_model_status = gr.State(value="❌ Model not loaded.")
 
 
 # Gradio Interface
