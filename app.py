@@ -25,8 +25,9 @@ model_choices = {
 
 login(token=os.environ["HUGGINGFACE_TOKEN"])
 
+default_model = "LLaMA 3.1 8B"
 
-model_utils.build_model(True, "LLaMA 3.1 8B")
+model_utils.build_model(True, default_model)
 
     
 # Gradio Interface
@@ -65,7 +66,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
                 selected_model = gr.Radio(choices=list(model_choices.keys()), value="LLaMA 3.1 8B", label="Select Model")
                 load_model_button = gr.Button("Load Selected Model")
                 gr.HTML("<span title='Load the selected model. Note that some models may take several minutes to load.'>ℹ️</span>")
-                model_load_status = gr.Textbox(label="Model Status", value="❌ No model loaded.")   
+                model_load_status = gr.Textbox(label="Model Status", value=f"✅ {default_model} loaded.")   
                 #print("DEBUG: Inside app.py tokenizer is", tokenizer_state)
                 #print("DEBUG: Inside app.py tokenizer.eos_token_id is", getattr(tokenizer_state, "eos_token_id", "None"))
                 
