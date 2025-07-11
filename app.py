@@ -19,7 +19,7 @@ import vector_utils
 # Model options
 model_choices = {
     "LLaMA 3.1 8B": "meta-llama/Meta-Llama-3.1-8B-Instruct",
-    "LLaMA 3.3": "meta-llama/Meta-Llama-3-8B-v3.3",
+    "LLaMA 3.3 70B": "meta-llama/Meta-Llama-3-8B-v3.3",
     "LLaMa 4 Scout Instruct": "meta-llama/Llama-4-Scout-17B-16E-Instruct",
     "DeepSeek 7B Chat": "deepseek-ai/deepseek-llm-7b-chat"
 }
