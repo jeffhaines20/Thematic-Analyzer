@@ -75,6 +75,58 @@ def build_model(use_llama, model_name):
         return f"No model was loaded because use_llama = False."
 
 
+@GPU
+def update_model(use_llama, model_name):
+    # Model options
+    global model, tokenizer
+
+    model = None
+    tokenizer = None
+    torch.cuda.empty_cache()
+    gc.collect()
+    
+    model_choices = {
+        "LLaMA 3.1 8B": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+        "LLaMA 3.3": "meta-llama/Meta-Llama-3-8B-v3.3",
+        "LLaMa 4 Scout Instruct": "meta-llama/Llama-4-Scout-17B-16E-Instruct",
+        "DeepSeek 7B Chat": "deepseek-ai/deepseek-llm-7b-chat"
+    }
+    model_id = model_choices[model_name]
+
+    if use_llama:
+        if use_llama == True:
+            print("Loading tokenizer and model...")
+        bnb_config = BitsAndBytesConfig(
+            load_in_4bit=True,
+            bnb_4bit_use_double_quant=True,
+            bnb_4bit_quant_type="nf4",
+            bnb_4bit_compute_dtype=torch.float16
+        )
+
+        tokenizer = AutoTokenizer.from_pretrained(
+            model_id, 
+            trust_remote_code=True, 
+            use_safetensors=True,
+            token=True,
+            revision="main"
+        )
+
+        model = AutoModelForCausalLM.from_pretrained(
+            model_id,
+            quantization_config=bnb_config,
+            device_map="auto",
+            trust_remote_code=True,
+            torch_dtype=torch.float16,
+            use_safetensors=True,
+            token=True,
+            revision="main"
+        )
+
+        return f"✅ {model_id} model is loaded."
+
+    else:
+        return f"No model was loaded because use_llama = False."
+
 
 def make_llm(model, tokenizer, temperature=0, token_limit=-1): 
     if token_limit < 1:
