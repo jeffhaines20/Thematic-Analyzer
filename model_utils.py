@@ -44,7 +44,13 @@ def build_model(use_llama, model_name):
             bnb_4bit_compute_dtype=torch.float16
         )
 
-        tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True, token=True)
+        tokenizer = AutoTokenizer.from_pretrained(
+            model_id, 
+            trust_remote_code=True, 
+            use_safetensors=True,
+            token=True,
+            revision="main"
+        )
 
         model = AutoModelForCausalLM.from_pretrained(
             model_id,
@@ -52,7 +58,9 @@ def build_model(use_llama, model_name):
             device_map="auto",
             trust_remote_code=True,
             torch_dtype=torch.float16,
-            token=True
+            use_safetensors=True,
+            token=True,
+            revision="main"
         )
 
         return f"✅ {model_id} model is loaded."
