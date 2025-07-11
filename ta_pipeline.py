@@ -81,7 +81,6 @@ def load_doc(file_input, path=False):
     return text
 
 
-@GPU(duration=120)
 def chat_with_text(question: str, text: str, chat_chain, already_vectorized: bool = False, threshold: float=0.5) -> list:
     if not already_vectorized:
         chunks, index, embeddings, embedder = vectorize_text(text)
