@@ -2,6 +2,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 from transformers.pipelines import pipeline
 from langchain_huggingface import HuggingFacePipeline
 import torch
+import gc
 import pickle
 import gradio as gr
 from datetime import datetime
@@ -25,6 +26,11 @@ tokenizer = None
 def build_model(use_llama, model_name):
     # Model options
     global model, tokenizer
+
+    model = None
+    tokenizer = None
+    torch.cuda.empty_cache()
+    gc.collect()
     
     model_choices = {
         "LLaMA 3.1 8B": "meta-llama/Meta-Llama-3.1-8B-Instruct",
@@ -66,10 +72,6 @@ def build_model(use_llama, model_name):
         return f"✅ {model_id} model is loaded."
 
     else:
-        # just pass placeholders to the tokenizer and model
-        tokenizer = None
-        model = None
-
         return f"No model was loaded because use_llama = False."
 
 
