@@ -186,13 +186,13 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
             with gr.Accordion("🧩 Theme Clusters", open=False):
                 theme_code_network_html = gr.HTML(label="Theme Network Visualization")
                 network_highlight_type = gr.State("Network")
+                network_download_format = gr.State("HTML")
                 download_network_button = gr.Button("Download Network Graph")
                 theme_code_network_output = gr.File(label="Click to Download")
                 download_network_button.click(
                     fn=du.export_html,
-                    inputs=[theme_code_network_html, network_highlight_type],
+                    inputs=[theme_code_network_html, network_highlight_type, network_download_format],
                     outputs=[theme_code_network_output])
-
 
         with gr.Tab("📝 Summarize Themes"):
             with gr.Row():
