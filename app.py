@@ -70,7 +70,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
                 model_load_status = gr.Textbox(label="Model Status", value=f"✅ {default_model} loaded.")   
                 
                 load_model_button.click(
-                  fn=model_utils.build_model,
+                  fn=model_utils.update_model,
                   inputs=[use_llm, selected_model],
                   outputs=[model_load_status]
                 )
