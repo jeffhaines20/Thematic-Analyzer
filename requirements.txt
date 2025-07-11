@@ -12,7 +12,9 @@ langchain
 spaces
 pyvis
 PyMuPDF
+beautifulsoup4
 python-docx
+bayoo-docx
 transformers
 torch
 langchain-huggingface
