@@ -36,6 +36,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
     gr.Markdown("## 🧠 Thematic Analyzer")
 
     # objects
+    default_model_state = gr.State(default_model)
     llm_state = gr.State()
     code_dict_state = gr.State()
     theme_dict_state = gr.State()
@@ -64,7 +65,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
         with gr.Tab("Model and Text Chunking Parameters"):
             with gr.Row():
                 use_llm = gr.Checkbox(label="Use an LLM", value=True, visible=False)
-                selected_model = gr.Radio(choices=list(model_choices.keys()), value="LLaMA 3.1 8B", label="Select Model")
+                selected_model = gr.Radio(choices=list(model_choices.keys()), value=default_model_state, label="Select Model")
                 load_model_button = gr.Button("Load Selected Model")
                 gr.HTML("<span title='Load the selected model. Note that some models may take several minutes to load.'>ℹ️</span>")
                 model_load_status = gr.Textbox(label="Model Status", value=f"✅ {default_model} loaded.")   
@@ -147,13 +148,14 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
 
             with gr.Accordion("📄 Coded Text", open=False):
                 html_code_output = gr.HTML(label="Highlighted Text")
-                #html_download_format = gr.Dropdown(["Word (.docx)", "PDF (.pdf)"], value=, label="Download Format")
-                code_highlight_type = gr.State("Codes")
-                download_coded_html_button = gr.Button("Download Highlighted Document")
+                with gr.Row():
+                    html_download_format = gr.Dropdown(["HTML", "Word (.docx)"], value="HTML", label="Download Format")
+                    code_highlight_type = gr.State("Codes")
+                    download_coded_text_button = gr.Button("Download Highlighted Document")
                 highlighted_code_output = gr.File(label="Click to Download")
-                download_coded_html_button.click(
+                download_coded_text_button.click(
                     fn=du.export_html,
-                    inputs=[html_code_output, code_highlight_type],
+                    inputs=[html_code_output, code_highlight_type, html_download_format, default_model_state],
                     outputs=[highlighted_code_output])
 
 
@@ -171,20 +173,22 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
 
             with gr.Accordion("📚 Text Annotated By Theme", open=False):
                 html_highlighted_by_theme = gr.HTML(label="Text Clustered by Theme")
-                theme_highlight_type = gr.State("Themes")
-                download_theme_html_button = gr.Button("Download Highlighted Document")
+                with gr.Row():
+                    theme_html_download_format = gr.Dropdown(["HTML", "Word (.docx)"], value="HTML", label="Download Format")
+                    theme_highlight_type = gr.State("Themes")
+                    download_theme_html_button = gr.Button("Download Highlighted Document")
                 highlighted_theme_output = gr.File(label="Click to Download")
                 download_theme_html_button.click(
                     fn=du.export_html,
-                    inputs=[html_highlighted_by_theme, theme_highlight_type],
+                    inputs=[html_highlighted_by_theme, theme_highlight_type, theme_html_download_format, default_model_state],
                     outputs=[highlighted_theme_output])
 
             with gr.Accordion("🧩 Theme Clusters", open=False):
                 theme_code_network_html = gr.HTML(label="Theme Network Visualization")
                 network_highlight_type = gr.State("Network")
-                download_networkcoded_html_button = gr.Button("Download Network Graph")
+                download_network_button = gr.Button("Download Network Graph")
                 theme_code_network_output = gr.File(label="Click to Download")
-                download_coded_html_button.click(
+                download_network_button.click(
                     fn=du.export_html,
                     inputs=[theme_code_network_html, network_highlight_type],
                     outputs=[theme_code_network_output])
