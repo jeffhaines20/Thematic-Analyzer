@@ -26,7 +26,7 @@ model_choices = {
 
 login(token=os.environ["HUGGINGFACE_TOKEN"])
 
-default_model = "DeepSeek 7B Chat"
+default_model = "LLaMA 3.1 8B"
 
 model_utils.build_model(True, default_model)
 vector_utils.load_embedder()
@@ -68,8 +68,6 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
                 load_model_button = gr.Button("Load Selected Model")
                 gr.HTML("<span title='Load the selected model. Note that some models may take several minutes to load.'>ℹ️</span>")
                 model_load_status = gr.Textbox(label="Model Status", value=f"✅ {default_model} loaded.")   
-                #print("DEBUG: Inside app.py tokenizer is", tokenizer_state)
-                #print("DEBUG: Inside app.py tokenizer.eos_token_id is", getattr(tokenizer_state, "eos_token_id", "None"))
                 
                 load_model_button.click(
                   fn=model_utils.build_model,
