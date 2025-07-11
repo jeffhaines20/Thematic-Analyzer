@@ -34,7 +34,7 @@ def build_model(use_llama, model_name):
     
     model_choices = {
         "LLaMA 3.1 8B": "meta-llama/Meta-Llama-3.1-8B-Instruct",
-        "LLaMA 3.3": "meta-llama/Meta-Llama-3-8B-v3.3",
+        "LLaMA 3.3 70B": "meta-llama/Llama-3.3-70B-Instruct",
         "LLaMa 4 Scout Instruct": "meta-llama/Llama-4-Scout-17B-16E-Instruct",
         "DeepSeek 7B Chat": "deepseek-ai/deepseek-llm-7b-chat"
     }
@@ -87,7 +87,7 @@ def update_model(use_llama, model_name):
     
     model_choices = {
         "LLaMA 3.1 8B": "meta-llama/Meta-Llama-3.1-8B-Instruct",
-        "LLaMA 3.3": "meta-llama/Meta-Llama-3-8B-v3.3",
+        "LLaMA 3.3 70B": "meta-llama/Llama-3.3-70B-Instruct",
         "LLaMa 4 Scout Instruct": "meta-llama/Llama-4-Scout-17B-16E-Instruct",
         "DeepSeek 7B Chat": "deepseek-ai/deepseek-llm-7b-chat"
     }
