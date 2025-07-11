@@ -112,6 +112,7 @@ def open_chat():
     return llm, gr.update(visible=False), gr.update(visible=True), gr.update(visible=True)
 
 
+@GPU(duration=120)
 def handle_chat(question, text, llm):
     chat_chain = chat_prompt | llm
     reply = chat_with_text(question, text, chat_chain)
