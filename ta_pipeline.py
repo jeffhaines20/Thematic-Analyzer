@@ -82,6 +82,7 @@ def load_doc(file_input, path=False):
 
 
 def chat_with_text(question: str, text: str, chat_chain, already_vectorized: bool = False, threshold: float=0.5) -> list:
+    print("In chat_with_text")
     if not already_vectorized:
         chunks, index, embeddings, embedder = vectorize_text(text)
     
@@ -107,12 +108,15 @@ def parse_chat(answer: str, marker: str=chat_marker) -> str:
 
 @GPU(duration=120)
 def open_chat():
+    print("In open_chat()")
     llm = model_utils.make_llm(model_utils.model, model_utils.tokenizer, temperature=0)
+    print("LLM made")
     return llm, gr.update(visible=False), gr.update(visible=True), gr.update(visible=True)
 
 
 @GPU(duration=120)
 def handle_chat(question, text, llm):
+    print("In handle_chat()")
     chat_chain = chat_prompt | llm
     reply = chat_with_text(question, text, chat_chain)
     return parse_chat(reply[0])
