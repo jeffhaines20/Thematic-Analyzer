@@ -4,6 +4,7 @@ nltk.download('punkt_tab')
 import hdbscan
 from nltk.tokenize import sent_tokenize
 from collections import defaultdict
+from spaces import GPU
 from sentence_transformers import SentenceTransformer
 
 embedder = None
