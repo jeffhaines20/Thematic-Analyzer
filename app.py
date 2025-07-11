@@ -26,7 +26,7 @@ model_choices = {
 
 login(token=os.environ["HUGGINGFACE_TOKEN"])
 
-default_model = "LLaMA 3.1 8B"
+default_model = "LLaMA 3.3 70B"
 
 model_utils.build_model(True, default_model)
 vector_utils.load_embedder()
