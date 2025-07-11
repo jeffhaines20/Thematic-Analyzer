@@ -9,6 +9,7 @@ import base64
 from IPython.display import HTML
 from pdf2image import convert_from_path
 import tempfile
+from bs4 import BeautifulSoup, NavigableString, Tag
 import viz
 import ta_pipeline as ta
 
@@ -25,17 +26,27 @@ def load_html_file(filepath="network.html"):
         return "<p><strong>Visualization file not found.</strong></p>"
 
 
-def export_html(html_obj, highlight_type="Output"):
+def export_html(html_obj, highlight_type="Output", download_type=".html", author=""):
     if html_obj is None:
         return None
 
     html_str = html_obj.value if hasattr(html_obj, 'value') else html_obj
 
-    path = f"{highlight_type}.html"
+    # Use a temporary directory to avoid filename collisions
+    temp_dir = tempfile.mkdtemp()
 
-    with open(path, "w", encoding="utf-8") as f:
-        f.write(html_str)
-    return path
+    if download_type == "HTML":
+        path = f"{temp_dir}/{highlight_type}.html"
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(html_str)
+        return path
+
+    elif download_type == "Word (.docx)":
+        path = f"{temp_dir}/{highlight_type}.docx"
+        return download_docx_comments(html_str, output_path=path, author=author)
+
+    else:
+        raise ValueError(f"Unsupported file type: {download_type}")
 
 
 def download_theme_table(combined_dict_state):
@@ -48,6 +59,7 @@ def download_theme_table(combined_dict_state):
 def rgb_to_hex(rgb_tuple):
     return "%02x%02x%02x" % rgb_tuple
 
+
 def highlight_run_bg(run, hex_color):
     """
     Apply background shading to a run (hex format like 'ffccee').
@@ -57,6 +69,7 @@ def highlight_run_bg(run, hex_color):
     shd.set(qn('w:fill'), hex_color)
     rPr.append(shd)
 
+
 def convert_docx_to_pdf(input_path, output_folder="/content"):
     subprocess.run([
         "libreoffice",
@@ -65,6 +78,7 @@ def convert_docx_to_pdf(input_path, output_folder="/content"):
         "--outdir", output_folder,
         input_path
     ])
+
 
 def get_dynamic_colors(n, seed = 1):
     random.seed(seed)
@@ -79,6 +93,45 @@ def get_dynamic_colors(n, seed = 1):
 
     return colors
 
+
+def download_docx_comments(html_str, output_path="annotated_output.docx", author=""):
+    doc = Document()
+    soup = BeautifulSoup(html_str, "html.parser")
+
+    content_div = soup.find("div")
+    if not content_div:
+        raise ValueError("No <div> found in the HTML input.")
+
+    paragraph = doc.add_paragraph()
+
+    for elem in content_div.children:
+        if isinstance(elem, NavigableString):
+            paragraph.add_run(str(elem))
+
+        elif isinstance(elem, Tag):
+            text = elem.get_text()
+            tooltip = elem.get("data-tooltip") or elem.get("title")
+            style_str = elem.get("style", "")
+
+            if elem.name == "span" and (
+                "highlight" in elem.get("class", []) or "background-color" in style_str
+            ):
+                run = paragraph.add_run(text)
+                run.font.highlight_color = 7  # Yellow highlight
+                if tooltip:
+                    run.add_comment(tooltip, author=author)
+
+            elif elem.name == "br":
+                paragraph = doc.add_paragraph()
+
+            else:
+                paragraph.add_run(text)
+
+    doc.save(output_path)
+    return output_path
+
+
+#### For Working With Documents in Jupyter Notebook ####
 def highlight_quotes_in_docx(input_path, output_path, combined_dict):
     doc = Document(input_path)
     full_text = "\n".join([p.text for p in doc.paragraphs])
