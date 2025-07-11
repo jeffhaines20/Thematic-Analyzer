@@ -201,7 +201,6 @@ def code_text(text, tokenizer, code_chain, n_codes=-1, marker=code_marker, chunk
 @GPU
 def parse_codes(codes: list[dict], text: str) -> dict:
     temp_dict = defaultdict(list)
-
     pattern = r"^\s*\d+\.\s*(.+?)\s*\|\s*(?:<code>)?(.+?)(?:</code>)?\s*\|\s*(\d+)\s*$"
 
     for chunk in codes:
@@ -213,7 +212,6 @@ def parse_codes(codes: list[dict], text: str) -> dict:
                 if (sentence, int(score)) not in temp_dict[code]:
                     temp_dict[code].append((sentence, int(score)))
 
-    # resolve or remove hallucinations
     possible_hallucinations = []
     for code in list(temp_dict.keys()):
         for i, (sentence, conf) in enumerate(temp_dict[code]):
@@ -224,17 +222,27 @@ def parse_codes(codes: list[dict], text: str) -> dict:
         print(f"Found {len(possible_hallucinations)} possible hallucinations. Searching for actual quotes...")
         chunks, index, embeddings, embedder = vectorize_text(text)
         resolved = 0
-        print("Vectorizing is complete.")
 
         for h in possible_hallucinations:
-            quote = match_quote_fast(h["sentence"], chunks, index, embeddings, embedder, threshold=0.65)
-            del temp_dict[h["code"]][h["index"]]
-            if quote[0]:
-                temp_dict[h["code"]].append((quote[0], h["conf"]))
-                resolved += 1
-            else:
-                if not temp_dict[h["code"]]:
-                    del temp_dict[h["code"]]
+            try:
+                quote = match_quote_fast(h["sentence"], chunks, index, embeddings, embedder, threshold=0.65)
+
+                # Remove the old hallucinated quote tuple (if it exists)
+                entry = (h["sentence"], h["conf"])
+                if entry in temp_dict[h["code"]]:
+                    temp_dict[h["code"]].remove(entry)
+
+                if quote[0]:
+                    temp_dict[h["code"]].append((quote[0], h["conf"]))
+                    resolved += 1
+
+                else:
+                    if not temp_dict[h["code"]]:
+                        del temp_dict[h["code"]]
+
+            except Exception as e:
+                print(f"❌ Exception while handling hallucination: {e}")
+
         print(f"Was able to resolve {resolved} hallucinations.")
 
     return dict(temp_dict)
