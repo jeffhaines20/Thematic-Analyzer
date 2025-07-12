@@ -114,6 +114,7 @@ def open_chat():
     return gr.update(visible=False), gr.update(visible=True), gr.update(visible=True)
 
 
+@GPU(duration=120)
 def handle_chat(question, text):
     global llm
     chat_chain = chat_prompt | llm
@@ -121,6 +122,7 @@ def handle_chat(question, text):
     return parse_chat(reply[0])
 
 
+@GPU
 def chunk_text_by_tokens(text, tokenizer, max_tokens=1024, overlap=100):
     tokens = tokenizer.encode(text, add_special_tokens=False)
     chunks = []
