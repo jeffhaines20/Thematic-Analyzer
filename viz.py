@@ -53,6 +53,16 @@ def experimental_plots():
 
     return plotly_plot, fig
 
+
+def code_dict_to_df(code_dict):
+    data = []
+    for code, entries in code_dict.items():
+        for sentence, conf in entries:
+            suffix = "..." if len(sentence) > 60 else ""
+            data.append({"Sentence": sentence[:60]+suffix, "Code": code, "Confidence": conf})
+    return pd.DataFrame(data)
+
+    
 def dict_to_table(combined_dict):
     rows = []
     for theme in combined_dict.keys():
