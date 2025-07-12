@@ -49,6 +49,38 @@ def export_html(html_obj, highlight_type="Output", download_type=".html", author
         raise ValueError(f"Unsupported file type: {download_type}")
 
 
+def save_code_changes(full_text, table, code_dict):
+    # Save function: update code_dict from table
+    new_dict = {}
+    for _, row in table.iterrows():
+        sentence, code, conf = row["Sentence"], row["Code"], int(row["Confidence"])
+        if len(sentence) > 60:
+            # sentence has been truncated. Need to retrieve full sentences from code_dict
+            for tup in code_dict[code]:
+                if tup[0][:60] == sentence[:60]:
+                    # match
+                    sentence = tup[0]
+                    break
+
+        if code not in new_dict:
+            new_dict[code] = []
+        new_dict[code].append((sentence, conf))
+    
+    code_editing_status = f"✅ Changes saved."
+    
+    code_table = viz.code_dict_to_df(new_dict)
+    html_code_output = viz.generate_highlighted_html(full_text, new_dict)
+
+    return code_editing_status, gr.update(visible=True), new_dict, code_table, html_code_output
+
+
+def cancel_code_changes(code_dict):
+    # Cancel function: reload table from code_dict
+    code_table = viz.code_dict_to_df(code_dict)
+    code_editing_status = f"Changes canceled. Reverting to previous state."
+    return code_editing_status, gr.update(visible=True), code_table
+
+
 def download_theme_table(combined_dict_state):
     theme_df = viz.dict_to_table(combined_dict_state)
     csv_path = "Theme Table.csv"
