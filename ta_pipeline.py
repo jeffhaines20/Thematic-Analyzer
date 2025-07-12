@@ -113,7 +113,7 @@ def open_chat():
     print("In open_chat()")
     llm = model_utils.make_llm(model_utils.model, model_utils.tokenizer, temperature=0)
     print("LLM made")
-    return gr.update(visible=True), gr.update(visible=True)
+    return gr.update(visible=False), gr.update(visible=True), gr.update(visible=True)
 
 
 @GPU(duration=120)
