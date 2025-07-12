@@ -7,7 +7,7 @@ from collections import defaultdict
 from spaces import GPU
 from sentence_transformers import SentenceTransformer
 
-embedder = None
+chunks = index = embeddings = embedder = None
 
 
 def load_embedder():
@@ -80,10 +80,11 @@ def group_chunks_by_cluster(chunks, labels):
 
 @GPU(duration=120)
 def vectorize_text(text: str, window_size: int=2):
-    global embedder
+    global chunks, index, embeddings, embedder
     print("Entered vectorize_text")
-    chunks, chunk_map = prepare_chunks(text, window_size=window_size)
-    index, embeddings = build_faiss_index(chunks, embedder)
+    if embedder is None:
+        chunks, chunk_map = prepare_chunks(text, window_size=window_size)
+        index, embeddings = build_faiss_index(chunks, embedder)
 
     return chunks, index, embeddings, embedder
 
