@@ -146,6 +146,13 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
                 raw_llm_output = gr.Textbox(label="Raw Output", lines=10)
 
             with gr.Accordion("📄 Coded Text", open=False):
+                with gr.Accordion("✏️ Code Editor", open=False):
+                    code_table = gr.Dataframe(label="📋 Codes", interactive=True) 
+                    with gr.Row():
+                        save_changes_button = gr.Button("Save Changes and Update Output")
+                        cancel_change_button = gr.Button("Cancel all Changes and Reload the Table")
+                        code_editing_status = gr.Textbox(label="Code Editing Status", visible=False)
+                        
                 html_code_output = gr.HTML(label="Highlighted Text")
                 with gr.Row():
                     html_download_format = gr.Dropdown(["HTML", "Word (.docx)"], value="HTML", label="Download Format")
@@ -496,7 +503,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
     code_event = code_button.click(
         fn=model_utils.code,
         inputs=[file_input, n_codes, temperature, user_prompt, use_example, session_runs, token_limit, chunk_size],
-        outputs=[html_code_output, code_dict_state, session_runs, coding_status, run_selector, available_runs, raw_llm_output],
+        outputs=[html_code_output, code_dict_state, session_runs, coding_status, run_selector, available_runs, raw_llm_output, code_table],
         )
 
     code_stop_button.click(fn=None, cancels=[code_event]).then(
