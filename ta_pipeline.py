@@ -201,6 +201,7 @@ def code_text(text, tokenizer, code_chain, n_codes=-1, marker=code_marker, chunk
         j += 1
 
 
+@GPU
 def parse_codes(codes: list[dict], text: str) -> dict:
     temp_dict = defaultdict(list)
     pattern = r"^\s*\d+\.\s*(.+?)\s*\|\s*(?:<code>)?(.+?)(?:</code>)?\s*\|\s*(\d+)\s*$"
