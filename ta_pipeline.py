@@ -83,7 +83,6 @@ def load_doc(file_input, path=False):
     return text
 
 
-@GPU
 def chat_with_text(question: str, text: str, chat_chain, threshold: float=0.5) -> list:
     print("In chat_with_text")
     chunks, index, embeddings, embedder = vectorize_text(text)
@@ -114,7 +113,7 @@ def open_chat():
     return gr.update(visible=False), gr.update(visible=True), gr.update(visible=True)
 
 
-@GPU(duration=120)
+@GPU
 def handle_chat(question, text):
     global llm
     chat_chain = chat_prompt | llm
