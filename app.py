@@ -310,7 +310,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
         chat_button.click(
             fn=ta.open_chat,
             inputs=[],
-            outputs=[user_msg, send_btn])
+            outputs=[chatbotbox, user_msg, send_btn])
 
         send_btn.click(
             fn=ta.handle_chat,
