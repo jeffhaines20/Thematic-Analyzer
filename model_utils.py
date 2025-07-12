@@ -21,28 +21,20 @@ from prompts import (
 
 model = None
 tokenizer = None
-
-
-def build_model(use_llama, model_name):
-    # Model options
-    global model, tokenizer
-
-    model = None
-    tokenizer = None
-    torch.cuda.empty_cache()
-    gc.collect()
-    
-    model_choices = {
+model_choices = {
         "LLaMA 3.1 8B": "meta-llama/Meta-Llama-3.1-8B-Instruct",
         "LLaMA 3.3 70B": "meta-llama/Llama-3.3-70B-Instruct",
         "LLaMa 4 Scout Instruct": "meta-llama/Llama-4-Scout-17B-16E-Instruct",
         "DeepSeek 7B Chat": "deepseek-ai/deepseek-llm-7b-chat"
     }
+
+def build_model(use_llm, model_name):
+    # Model options
+    global model, tokenizer
+   
     model_id = model_choices[model_name]
 
-    if use_llama:
-        if use_llama == True:
-            print("Loading tokenizer and model...")
+    if use_llm == True:
         bnb_config = BitsAndBytesConfig(
             load_in_4bit=True,
             bnb_4bit_use_double_quant=True,
@@ -72,11 +64,11 @@ def build_model(use_llama, model_name):
         return f"✅ {model_id} model is loaded."
 
     else:
-        return f"No model was loaded because use_llama = False."
+        return f"No model was loaded because use_llm = False."
 
 
 @GPU
-def update_model(use_llama, model_name):
+def update_model(use_llm, model_name):
     # Model options
     global model, tokenizer
 
@@ -85,17 +77,9 @@ def update_model(use_llama, model_name):
     torch.cuda.empty_cache()
     gc.collect()
     
-    model_choices = {
-        "LLaMA 3.1 8B": "meta-llama/Meta-Llama-3.1-8B-Instruct",
-        "LLaMA 3.3 70B": "meta-llama/Llama-3.3-70B-Instruct",
-        "LLaMa 4 Scout Instruct": "meta-llama/Llama-4-Scout-17B-16E-Instruct",
-        "DeepSeek 7B Chat": "deepseek-ai/deepseek-llm-7b-chat"
-    }
     model_id = model_choices[model_name]
 
-    if use_llama:
-        if use_llama == True:
-            print("Loading tokenizer and model...")
+    if use_llm == True:
         bnb_config = BitsAndBytesConfig(
             load_in_4bit=True,
             bnb_4bit_use_double_quant=True,
@@ -125,7 +109,7 @@ def update_model(use_llama, model_name):
         return f"✅ {model_id} model is loaded."
 
     else:
-        return f"No model was loaded because use_llama = False."
+        return f"No model was loaded because use_llm = False."
 
 
 def make_llm(model, tokenizer, temperature=0, token_limit=-1): 
@@ -154,7 +138,6 @@ def make_llm(model, tokenizer, temperature=0, token_limit=-1):
     return llm
 
 
-@GPU(duration=120)
 def code(file_input, n_codes=-1, temperature=0, user_prompt='', use_example=False, session_runs=[], token_limit=-1, chunk_size=1024, batch_size=1):
     global model, tokenizer
 
@@ -245,7 +228,6 @@ def code(file_input, n_codes=-1, temperature=0, user_prompt='', use_example=Fals
     yield highlighted_html, code_dict, session_runs, coding_status, run_selector_update, run_selector_update, codes
 
 
-@GPU(duration=120)
 def cluster(full_text, code_dict, max_themes, temperature, use_example, session_runs, token_limit, chunk_size):
     # needs to run the cluster_chain on the code_dict, return a theme_dict, and visualize the clusters
     global model, tokenizer
@@ -336,7 +318,6 @@ def cluster(full_text, code_dict, max_themes, temperature, use_example, session_
     yield theme_dict, theme_network_html, html_highlighted_by_theme, session_runs, theme_status, run_selector_update, run_selector_update
 
 
-@GPU(duration=120)
 def summarize(theme_dict, code_dict, text, temperature, use_example, session_runs, token_limit, chunk_size):
     # needs to run the summary_chain on theme_dict, then combine all dictionaries and return a table of the combined_dict
     global model, tokenizer
