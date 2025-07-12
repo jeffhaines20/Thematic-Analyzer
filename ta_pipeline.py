@@ -22,6 +22,7 @@ chat_marker = "**Answer**"
 code_marker = "===ANNOTATIONS START==="
 cluster_marker = "Do not repeat codes within a theme.\n"
 summary_marker = "\n---\n\n**"
+llm = None
 
 ## Load the User's Document
 def update_upload_status(file_input):
@@ -108,14 +109,16 @@ def parse_chat(answer: str, marker: str=chat_marker) -> str:
 
 @GPU(duration=120)
 def open_chat():
+    global llm
     print("In open_chat()")
     llm = model_utils.make_llm(model_utils.model, model_utils.tokenizer, temperature=0)
     print("LLM made")
-    return llm, gr.update(visible=False), gr.update(visible=True), gr.update(visible=True)
+    return gr.update(visible=True), gr.update(visible=True)
 
 
 @GPU(duration=120)
-def handle_chat(question, text, llm):
+def handle_chat(question, text):
+    global llm,
     print("In handle_chat()")
     chat_chain = chat_prompt | llm
     reply = chat_with_text(question, text, chat_chain)
