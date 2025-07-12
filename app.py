@@ -152,7 +152,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
                         save_changes_button = gr.Button("Save Changes and Update Output")
                         cancel_change_button = gr.Button("Cancel all Changes and Reload the Table")
                         code_editing_status = gr.Textbox(label="Code Editing Status", visible=False)
-                        
+
                 html_code_output = gr.HTML(label="Highlighted Text")
                 with gr.Row():
                     html_download_format = gr.Dropdown(["HTML", "Word (.docx)"], value="HTML", label="Download Format")
@@ -163,6 +163,18 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
                     fn=du.export_html,
                     inputs=[html_code_output, code_highlight_type, html_download_format, default_model_state],
                     outputs=[highlighted_code_output])
+                
+                save_changes_button.click(
+                    fn=du.save_code_changes,
+                    inputs=[full_text, code_table, code_dict_state],
+                    outputs=[code_editing_status, code_editing_status, code_dict_state, code_table, html_code_output]
+                )
+
+                cancel_change_button.click(
+                    fn=du.cancel_code_changes,
+                    inputs=[code_dict_state],
+                    outputs=[code_editing_status, code_editing_status, code_table]
+                )
 
 
         with gr.Tab("📚 Cluster Codes into Themes"):
