@@ -296,11 +296,11 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
         )
 
 
-    #### Chat with text using Retrieval Augmented Generation ####
-    with gr.Accordion("💬 Chat with Text", open=False):
+    #### Query text using Retrieval Augmented Generation ####
+    with gr.Accordion("💬 Query Your Text", open=False):
         with gr.Row():
-            chat_button = gr.Button("💬 Chat with Text")
-            gr.HTML("<span title='Chat with your text using Llama.'>ℹ️</span>")
+            chat_button = gr.Button("💬 Query Text")
+            gr.HTML("<span title='Ask questions about content of the text. Model will respond using retrieval augmented generation. Note current settings are experimental and biased toward avoiding false positives.'>ℹ️</span>")
 
         chatbot_box = gr.Chatbot(label="Chat Window", visible=False, type="messages")
         user_msg = gr.Textbox(label="Your Message", visible=False)
