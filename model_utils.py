@@ -150,19 +150,19 @@ def code(file_input, n_codes=-1, temperature=0, user_prompt='', use_example=Fals
             with open("assets/Examples/tony_code_dict.pickle", "rb") as f:
                 code_dict = pickle.load(f)
         except Exception as e:
-            yield None, None, session_runs, f"❌ Error loading example code data: {str(e)}", None, None, None
+            yield None, None, session_runs, f"❌ Error loading example code data: {str(e)}", None, None, None, None
             return
 
         try:
             full_text = ta.load_doc("assets/Examples/Tony Avidnote.docx", path=True)
         except Exception as e:
-            yield None, None, session_runs, f"❌ Error loading example text: {str(e)}", None, None, None
+            yield None, None, session_runs, f"❌ Error loading example text: {str(e)}", None, None, None, None
             return
 
         try:
            highlighted_html = viz.generate_highlighted_html(full_text, code_dict)
         except Exception as e:
-            yield None, None, session_runs, f"❌ Error highlighting html: {str(e)}", None, None, None
+            yield None, None, session_runs, f"❌ Error highlighting html: {str(e)}", None, None, None, None
             return
 
         coding_result = {
@@ -172,15 +172,16 @@ def code(file_input, n_codes=-1, temperature=0, user_prompt='', use_example=Fals
 
         session_runs.append(coding_result)
         coding_status = "✅ Successfully loaded coding example."
+        code_table = viz.code_dict_to_df(code_dict)
 
         run_selector_update = update_run_selector(session_runs)
 
-        yield highlighted_html, code_dict, session_runs, coding_status, run_selector_update, run_selector_update, None
+        yield highlighted_html, code_dict, session_runs, coding_status, run_selector_update, run_selector_update, None, code_table
         return
 
     # otherwise make llm, chain, and run prompt
     if file_input is None:
-        yield None, None, session_runs, "Please upload a file.", None, None, None
+        yield None, None, session_runs, "Please upload a file.", None, None, None, None
         return
     elif type(file_input) == str:
         full_text = ta.load_doc(file_input, path=True)
@@ -199,18 +200,18 @@ def code(file_input, n_codes=-1, temperature=0, user_prompt='', use_example=Fals
         def collect_codes():
             for output in ta.code_text(full_text, tokenizer, code_chain, n_codes=n_codes, chunk_size=chunk_size, user_prompt=user_prompt, batch_size=batch_size):
                 codes.append(output)
-                yield None, None, session_runs, None, None, None, codes
+                yield None, None, session_runs, None, None, None, codes, None
 
         yield from collect_codes()
         # use this if cancellation is not needed: codes = ta.code_text(full_text, tokenizer, code_chain, n_codes=n_codes, chunk_size=chunk_size, user_prompt=user_prompt)
     
     except Exception as e:
-        return None, None, session_runs, f"❌ Error in coding using LLaMA: {str(e)}", None, None, None
+        return None, None, session_runs, f"❌ Error in coding using LLaMA: {str(e)}", None, None, None, None
 
     try:
         code_dict = ta.parse_codes(codes, full_text)
     except Exception as e:
-        return None, None, session_runs, f"❌ Error in parsing codes: {str(e)}. Codes: {codes}", None, None, None
+        return None, None, session_runs, f"❌ Error in parsing codes: {str(e)}. Codes: {codes}", None, None, None, None
 
 
     # save the results locally
@@ -222,11 +223,12 @@ def code(file_input, n_codes=-1, temperature=0, user_prompt='', use_example=Fals
     session_runs.append(coding_result)
     coding_status = "✅ Successfully coded text."
     highlighted_html = viz.generate_highlighted_html(full_text, code_dict)
+    code_table = viz.code_dict_to_df(code_dict)
 
     # need to update the run selector
     run_selector_update = update_run_selector(session_runs)
 
-    yield highlighted_html, code_dict, session_runs, coding_status, run_selector_update, run_selector_update, codes
+    yield highlighted_html, code_dict, session_runs, coding_status, run_selector_update, run_selector_update, codes, code_table
 
 
 @GPU(duration=120)
