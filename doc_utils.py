@@ -2,6 +2,7 @@ import fitz
 from docx import Document
 import subprocess
 import random
+import gradio as gr
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from PIL import Image
@@ -49,18 +50,20 @@ def export_html(html_obj, highlight_type="Output", download_type=".html", author
         raise ValueError(f"Unsupported file type: {download_type}")
 
 
+# Save function: update code_dict from table
 def save_code_changes(full_text, table, code_dict):
-    # Save function: update code_dict from table
     new_dict = {}
     for _, row in table.iterrows():
         sentence, code, conf = row["Sentence"], row["Code"], int(row["Confidence"])
+        # need to check if code has changed
         if len(sentence) > 60:
-            # sentence has been truncated. Need to retrieve full sentences from code_dict
-            for tup in code_dict[code]:
-                if tup[0][:60] == sentence[:60]:
-                    # match
-                    sentence = tup[0]
-                    break
+            # sentence has been truncated - need to search code dict for it
+            for key in code_dict.keys():
+                for tup in code_dict[key]:
+                    if tup[0][:60] == sentence[:60]:
+                        # match
+                        sentence = tup[0]
+                        break
 
         if code not in new_dict:
             new_dict[code] = []
@@ -72,6 +75,7 @@ def save_code_changes(full_text, table, code_dict):
     html_code_output = viz.generate_highlighted_html(full_text, new_dict)
 
     return code_editing_status, gr.update(visible=True), new_dict, code_table, html_code_output
+
 
 
 def cancel_code_changes(code_dict):
