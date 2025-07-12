@@ -24,6 +24,7 @@ cluster_marker = "Do not repeat codes within a theme.\n"
 summary_marker = "\n---\n\n**"
 llm = None
 
+
 ## Load the User's Document
 def update_upload_status(file_input):
     if not file_input or not hasattr(file_input, "name"):
@@ -82,10 +83,9 @@ def load_doc(file_input, path=False):
     return text
 
 
-def chat_with_text(question: str, text: str, chat_chain, already_vectorized: bool = False, threshold: float=0.5) -> list:
+def chat_with_text(question: str, text: str, chat_chain, threshold: float=0.5) -> list:
     print("In chat_with_text")
-    if not already_vectorized:
-        chunks, index, embeddings, embedder = vectorize_text(text)
+    chunks, index, embeddings, embedder = vectorize_text(text)
     
     context = match_quote_fast(question, chunks, index, embeddings, embedder, threshold = 0.1)[0]
 
