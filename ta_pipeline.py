@@ -83,6 +83,7 @@ def load_doc(file_input, path=False):
     return text
 
 
+@GPU
 def chat_with_text(question: str, text: str, chat_chain, threshold: float=0.5) -> list:
     print("In chat_with_text")
     chunks, index, embeddings, embedder = vectorize_text(text)
@@ -113,7 +114,6 @@ def open_chat():
     return gr.update(visible=False), gr.update(visible=True), gr.update(visible=True)
 
 
-@GPU(duration=120)
 def handle_chat(question, text):
     global llm
     chat_chain = chat_prompt | llm
@@ -121,7 +121,6 @@ def handle_chat(question, text):
     return parse_chat(reply[0])
 
 
-@GPU
 def chunk_text_by_tokens(text, tokenizer, max_tokens=1024, overlap=100):
     tokens = tokenizer.encode(text, add_special_tokens=False)
     chunks = []
@@ -201,7 +200,6 @@ def code_text(text, tokenizer, code_chain, n_codes=-1, marker=code_marker, chunk
         j += 1
 
 
-@GPU
 def parse_codes(codes: list[dict], text: str) -> dict:
     temp_dict = defaultdict(list)
     pattern = r"^\s*\d+\.\s*(.+?)\s*\|\s*(?:<code>)?(.+?)(?:</code>)?\s*\|\s*(\d+)\s*$"
@@ -251,7 +249,7 @@ def parse_codes(codes: list[dict], text: str) -> dict:
     return dict(temp_dict)
 
 
-@GPU(duration=300)
+@GPU(duration=120)
 def develop_themes(codes: str, tokenizer, cluster_chain, marker: str=cluster_marker, max_themes: int=-1, chunk_size:int=1024, progress=gr.Progress()) -> list:
     chunks = chunk_text_by_tokens(codes, tokenizer, max_tokens=chunk_size)
     n_chunks = len(chunks)
@@ -298,7 +296,7 @@ def parse_themes(themes: list[dict]) -> dict[str, list[str]]:
     return dict(theme_dict)
 
 
-@GPU(duration=300)
+@GPU(duration=120)
 def summarize_themes(theme_dict: list[dict], text: str, tokenizer, summary_chain, marker: str=summary_marker, chunk_size: int=1024, progress=gr.Progress()) -> list:
     chunks = chunk_text_by_tokens(text, tokenizer, max_tokens=chunk_size)
     n_chunks = len(chunks)
