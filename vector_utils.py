@@ -43,7 +43,6 @@ def build_faiss_index(chunks, embedder):
     return index, embeddings
 
 
-@GPU(duration=120)
 def match_quote_fast(quote, chunks, index, embeddings, embedder, threshold=0.65):
     quote_embedding = embedder.encode([quote], convert_to_numpy=True)
 
