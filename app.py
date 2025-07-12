@@ -37,7 +37,6 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
 
     # objects
     default_model_state = gr.State(default_model)
-    llm_state = gr.State()
     code_dict_state = gr.State()
     theme_dict_state = gr.State()
     combined_dict_state = gr.State()
@@ -311,11 +310,11 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
         chat_button.click(
             fn=ta.open_chat,
             inputs=[],
-            outputs=[llm_state, chatbot_box, user_msg, send_btn])
+            outputs=[user_msg, send_btn])
 
         send_btn.click(
             fn=ta.handle_chat,
-            inputs=[user_msg, full_text, llm_state],
+            inputs=[user_msg, full_text],
             outputs=[chat_output]
         )
 
