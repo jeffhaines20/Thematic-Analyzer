@@ -109,17 +109,13 @@ def parse_chat(answer: str, marker: str=chat_marker) -> str:
 
 def open_chat():
     global llm
-    print("In open_chat()")
     llm = model_utils.make_llm(model_utils.model, model_utils.tokenizer, temperature=0)
-    print("LLM made")
-    return gr.update(visible=True), gr.update(visible=True), gr.update(visible=True)
+    return gr.update(visible=False), gr.update(visible=True), gr.update(visible=True)
 
 
 @GPU(duration=120)
 def handle_chat(question, text):
     global llm
-    print(f"LLM is {llm}")
-    print("In handle_chat()")
     chat_chain = chat_prompt | llm
     reply = chat_with_text(question, text, chat_chain)
     return parse_chat(reply[0])
