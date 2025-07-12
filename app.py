@@ -64,7 +64,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
         with gr.Tab("Model and Text Chunking Parameters"):
             with gr.Row():
                 use_llm = gr.Checkbox(label="Use an LLM", value=True, visible=False)
-                selected_model = gr.Radio(choices=list(model_choices.keys()), value=default_model_state, label="Select Model")
+                selected_model = gr.Radio(choices=list(model_choices.keys()), value=default_model, label="Select Model")
                 load_model_button = gr.Button("Load Selected Model")
                 gr.HTML("<span title='Load the selected model. Note that some models may take several minutes to load.'>ℹ️</span>")
                 model_load_status = gr.Textbox(label="Model Status", value=f"✅ {default_model} loaded.")   
