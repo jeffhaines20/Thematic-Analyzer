@@ -118,7 +118,7 @@ def open_chat():
 
 @GPU(duration=120)
 def handle_chat(question, text):
-    global llm,
+    global llm
     print("In handle_chat()")
     chat_chain = chat_prompt | llm
     reply = chat_with_text(question, text, chat_chain)
