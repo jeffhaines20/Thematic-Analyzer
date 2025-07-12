@@ -82,7 +82,7 @@ def group_chunks_by_cluster(chunks, labels):
 def vectorize_text(text: str, window_size: int=2):
     global chunks, index, embeddings, embedder
     print("Entered vectorize_text")
-    if embedder is None:
+    if chunks is None:
         chunks, chunk_map = prepare_chunks(text, window_size=window_size)
         index, embeddings = build_faiss_index(chunks, embedder)
 
