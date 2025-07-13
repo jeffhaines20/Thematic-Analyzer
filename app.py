@@ -90,7 +90,6 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
                 and maximum number of new tokens. The first plot is the results of coding runs in this app with "Track Performance" checked.''')
                 update_dynamic_plot = gr.Button("Update")
                 dynamic_plot = gr.Plot()
-                update_dynamic_plot.click(viz.experimental_plots, outputs=[dynamic_plot, plotly_output, seaborn_output])
                 gr.Markdown('''These bottom results are from using Llama 3.1 8B to code a sample text. In all cases the value for number of codes was set at 
                 zero - in other words left up to the model, and no additional prompting was used. Performance may differ with specialized prompting. 
                 These help to visualize the tradeoff between the time it takes to complete the coding and the comprehensiveness of the coding. In the first plot,
@@ -98,6 +97,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
                 slows down around here.''')
                 plotly_output = gr.Plot()
                 seaborn_output = gr.Plot()
+                update_dynamic_plot.click(viz.experimental_plots, outputs=[dynamic_plot, plotly_output, seaborn_output])
                 demo.load(viz.experimental_plots, outputs=[dynamic_plot, plotly_output, seaborn_output])
     
         with gr.Tab("📁 Load File"):
