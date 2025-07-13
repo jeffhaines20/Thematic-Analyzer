@@ -167,7 +167,7 @@ def log_model_performance(new_row: dict):
     print("✅ Model performance row pushed to dataset.")
 
 
-@GPU(duration=120)
+@GPU(duration=480)
 def code(selected_model, file_input, n_codes=0, temperature=0, user_prompt='', use_example=False, session_runs=[], token_limit=-1, chunk_size=1024, track_performance=False):
     global model, tokenizer
 
