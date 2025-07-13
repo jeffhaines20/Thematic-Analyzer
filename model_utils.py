@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
 import time
+import os
+from datasets import load_dataset, Dataset
+from huggingface_hub import HfApi
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 from transformers.pipelines import pipeline
 from langchain_huggingface import HuggingFacePipeline
@@ -143,6 +146,25 @@ def make_llm(model, tokenizer, temperature=0, token_limit=-1):
     return llm
 
 
+def log_to_hf_dataset(new_row, repo_id):
+    token = os.getenv("HF_WRITE_TOKEN")
+
+    # Load existing dataset
+    try:
+        ds = load_dataset(repo_id, split="train", use_auth_token=token)
+        df = ds.to_pandas()
+    except:
+        df = pd.DataFrame()
+
+    # Append new row
+    df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+
+    # Push back to Hub
+    new_ds = Dataset.from_pandas(df)
+    new_ds.push_to_hub(repo_id, token=token)
+    print("✅ Logged new row.")
+
+
 @GPU(duration=120)
 def code(selected_model, file_input, n_codes=-1, temperature=0, user_prompt='', use_example=False, session_runs=[], token_limit=-1, chunk_size=1024, batch_size=1, track_performance=False):
     global model, tokenizer
@@ -256,10 +278,9 @@ def code(selected_model, file_input, n_codes=-1, temperature=0, user_prompt='', 
                "User Prompt": user_prompt,
                "Model": selected_model
                }
-        saved_df = pd.read_csv("assets/Experiment Results/Dynamic Results.csv")
-        saved_df = pd.concat([saved_df, new_row], ignore_index=True)
-        saved_df.to_csv("assets/Experiment Results/Dynamic Results.csv")
-        print(f"Results saved.")
+
+        repo_id = "jeffhaines/thematic-analyzer-model-metrics-log"
+        log_to_hf_dataset(new_row, repo_id)
 
     yield highlighted_html, code_dict, session_runs, coding_status, run_selector_update, run_selector_update, codes, code_table
 
