@@ -146,7 +146,6 @@ def make_llm(model, tokenizer, temperature=0, token_limit=-1):
 
 
 def log_model_performance(new_row: dict):
-    print("In log_model_performance")
     token = os.getenv("HF_WRITE_TOKEN")
     repo_id = "jeffhaines/thematic-analysis-model-performance-log"
 
