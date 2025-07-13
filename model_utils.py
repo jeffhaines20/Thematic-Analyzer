@@ -154,7 +154,7 @@ def log_model_performance(new_row: dict):
     print(f"Results of write token: {ds}")
 
     ds = load_dataset("jeffhaines/thematic-analysis-model-performance-log", split="train", use_auth_token=read_token)
-    print(f"Results of read token: {ds})
+    print(f"Results of read token: {ds}")
 
     # Try to load existing dataset
     try:
