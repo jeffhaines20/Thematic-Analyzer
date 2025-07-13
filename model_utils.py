@@ -284,7 +284,7 @@ def code(selected_model, file_input, n_codes=-1, temperature=0, user_prompt='', 
                }
 
         print(f"New data is {new_row}")
-        log_to_hf_dataset(new_row)
+        log_model_performance(new_row)
 
     yield highlighted_html, code_dict, session_runs, coding_status, run_selector_update, run_selector_update, codes, code_table
 
