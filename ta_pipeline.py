@@ -137,7 +137,7 @@ def chunk_text_by_tokens(text, tokenizer, max_tokens=1024, overlap=100):
     return chunks
 
 
-@GPU(duration=120)
+@GPU(duration=480)
 def code_text(text, tokenizer, code_chain, n_codes=-1, marker=code_marker, chunk_size=1024, user_prompt='', batch_size=6, progress=gr.Progress()):
     chunks = chunk_text_by_tokens(text, tokenizer, max_tokens=chunk_size)
     n_chunks = len(chunks)
