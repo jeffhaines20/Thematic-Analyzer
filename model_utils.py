@@ -3,7 +3,6 @@ import numpy as np
 import time
 import os
 from datasets import load_dataset, Dataset
-from huggingface_hub import HfApi
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 from transformers.pipelines import pipeline
 from langchain_huggingface import HuggingFacePipeline
@@ -147,6 +146,7 @@ def make_llm(model, tokenizer, temperature=0, token_limit=-1):
 
 
 def log_model_performance(new_row: dict):
+    print("In log_model_performance")
     token = os.getenv("HF_WRITE_TOKEN")
     repo_id = "jeffhaines/thematic-analysis-model-performance-log"
 
@@ -172,6 +172,7 @@ def code(selected_model, file_input, n_codes=-1, temperature=0, user_prompt='', 
     global model, tokenizer
     
     # record start time to evaluate performance
+    print(f"Trackperformance={track_performance}")
     start = time.perf_counter()
 
     if session_runs is None:
@@ -281,6 +282,7 @@ def code(selected_model, file_input, n_codes=-1, temperature=0, user_prompt='', 
                "Model": selected_model
                }
 
+        print(f"New data is {new_row}")
         log_to_hf_dataset(new_row)
 
     yield highlighted_html, code_dict, session_runs, coding_status, run_selector_update, run_selector_update, codes, code_table
