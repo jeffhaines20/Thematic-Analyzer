@@ -259,8 +259,7 @@ def code(selected_model, file_input, n_codes=-1, temperature=0, user_prompt='', 
         saved_df = pd.read_csv("assets/Experiment Results/Dynamic Results.csv")
         saved_df = pd.concat([saved_df, new_row], ignore_index=True)
         saved_df.to_csv("assets/Experiment Results/Dynamic Results.csv")
-        print(f"Results saved. Results this session are {new_row.")
-        print(f"Overall results are {saved_df}")
+        print(f"Results saved.")
 
     yield highlighted_html, code_dict, session_runs, coding_status, run_selector_update, run_selector_update, codes, code_table
 
