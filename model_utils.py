@@ -146,19 +146,12 @@ def make_llm(model, tokenizer, temperature=0, token_limit=-1):
 
 
 def log_model_performance(new_row: dict):
-    write_token = os.getenv("HF_WRITE_TOKEN")
-    read_token = os.getenv("HUGGINGFACE_TOKEN")
+    token = os.getenv("HF_WRITE_TOKEN")
     repo_id = "jeffhaines/thematic-analysis-model-performance-log"
-
-    ds = load_dataset("jeffhaines/thematic-analysis-model-performance-log", split="train", use_auth_token=write_token)
-    print(f"Results of write token: {ds}")
-
-    ds = load_dataset("jeffhaines/thematic-analysis-model-performance-log", split="train", use_auth_token=read_token)
-    print(f"Results of read token: {ds}")
 
     # Try to load existing dataset
     try:
-        ds = load_dataset(repo_id, split="train", use_auth_token=token)
+        ds = load_dataset(repo_id, split="train", token=token)
         df = ds.to_pandas()
         print(f"✅ Loaded existing dataset with {len(df)} rows.")
     except Exception as e:
