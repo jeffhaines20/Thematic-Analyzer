@@ -1,3 +1,6 @@
+import pandas as pd
+import numpy as np
+import time
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 from transformers.pipelines import pipeline
 from langchain_huggingface import HuggingFacePipeline
@@ -8,6 +11,8 @@ import gradio as gr
 from datetime import datetime
 from transformers.pipelines.text2text_generation import ReturnType
 from spaces import GPU
+
+# Local Dependencies
 import viz
 from run_management import update_run_selector
 import ta_pipeline as ta
@@ -139,12 +144,16 @@ def make_llm(model, tokenizer, temperature=0, token_limit=-1):
 
 
 @GPU(duration=120)
-def code(file_input, n_codes=-1, temperature=0, user_prompt='', use_example=False, session_runs=[], token_limit=-1, chunk_size=1024, batch_size=1):
+def code(selected_model, file_input, n_codes=-1, temperature=0, user_prompt='', use_example=False, session_runs=[], token_limit=-1, chunk_size=1024, batch_size=1, track_performance=False):
     global model, tokenizer
+    
+    # record start time to evaluate performance
+    start = time.perf_counter()
 
     if session_runs is None:
         session_runs = []
 
+    # use saved dictionary to conserve resources
     if use_example:
         try:
             with open("assets/Examples/tony_code_dict.pickle", "rb") as f:
@@ -227,6 +236,29 @@ def code(file_input, n_codes=-1, temperature=0, user_prompt='', use_example=Fals
 
     # need to update the run selector
     run_selector_update = update_run_selector(session_runs)
+
+    # record the performance of the model
+    end = time.perf_counter()
+    if track_performance == True:
+        distinct_quotes = set([tup[0] for code in code_dict.keys() for tup in code_dict[code]])
+        distinct_quotes = "".join(distinct_quotes)
+        text_length = len(full_text)
+        perc_covered = (len(distinct_quotes)/text_length) * 100
+ 
+        new_row = {"New Tokens": token_limit,
+               "Chunk Size": chunk_size,
+               "Codes Generated": len(code_dict.keys()),
+               "Percentage of Text Covered": perc_covered,
+               "Time (Seconds)": end - start,
+               "Text Length": text_length,
+               "Characters per Second": text_length/(end-start),
+               "Date and Time": datetime.now().strftime('%H:%M:%S'),
+               "User Prompt": user_prompt,
+               "Model": selected_model
+               }
+        saved_df = pd.read_csv("assets/Experiment Results/Dynamic Results.csv")
+        saved_df = pd.concat([saved_df, new_row], ignore_index=True)
+        saved_df.to_csv("assets/Experiment Results/Dynamic Results.csv")
 
     yield highlighted_html, code_dict, session_runs, coding_status, run_selector_update, run_selector_update, codes, code_table
 
