@@ -1,5 +1,7 @@
 import pandas as pd
 import networkx as nx
+import os
+from datasets import load_dataset
 from pyvis.network import Network
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -24,6 +26,28 @@ import gradio as gr
 
 
 def experimental_plots():
+    # dynamic performance plotting
+    token = os.getenv("HF_WRITE_TOKEN")
+    repo_id = "jeffhaines/thematic-analysis-model-performance-log"
+
+    # Try to load existing dataset
+    try:
+        ds = load_dataset(repo_id, split="train", token=token)
+        dynamic_df = ds.to_pandas()
+    except Exception as e:
+        print(f"⚠️ Couldn't load dataset. Error: {e}")
+    
+    dynamic_plot = px.scatter(
+          dynamic_df,
+          x="Characters per Second",
+          y="Percentage of Text Covered",
+          color="Model",
+          hover_data=["New Tokens", "Chunk Size", "Time (Seconds)", "Percentage of Text Covered", "Codes Generated", "User Prompt"],
+          title="Length/Time vs. % Covered",
+          color_continuous_scale='Viridis_r',  # <- the "_r" reverses the color scale
+    )
+        
+    
     df = pd.read_csv("assets/Experiment Results/Experiment Results.csv", index_col=0)
     plotly_plot = px.scatter(
           df,
@@ -51,7 +75,7 @@ def experimental_plots():
     ax.set_ylabel("New Tokens")
     ax.invert_yaxis()
 
-    return plotly_plot, fig
+    return dynamic_plot, plotly_plot, fig
 
 
 def code_dict_to_df(code_dict):
