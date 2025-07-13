@@ -1,10 +1,7 @@
 ## libraries
 import gradio as gr
-import numpy as np
-import pickle
 from huggingface_hub import login
 import os
-import torch
 
 # import local dependencies
 import viz
@@ -140,6 +137,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
                 gr.HTML("<span title='LLaMA will read the document and code sentences it thinks are important. Use the sliders above to tune your parameters, and enter your own custom prompt if desired.'>ℹ️</span>")
                 code_stop_button = gr.Button("Cancel")
                 gr.HTML("<span title='Stop coding the text.'>ℹ️</span>")
+                track_performance = gr.Checkbox(label="Track Performance", value=True, visible=True)
 
             coding_status = gr.Textbox(label="Status", visible=True)
             with gr.Accordion("Raw Output (For Debugging)", open=False):
@@ -514,7 +512,7 @@ with gr.Blocks(title="LLaMA 3 Thematic Analyzer") as demo:
     # --- Core Button Logic ---
     code_event = code_button.click(
         fn=model_utils.code,
-        inputs=[file_input, n_codes, temperature, user_prompt, use_example, session_runs, token_limit, chunk_size],
+        inputs=[selected_model, file_input, n_codes, temperature, user_prompt, use_example, session_runs, token_limit, chunk_size, track_performance],
         outputs=[html_code_output, code_dict_state, session_runs, coding_status, run_selector, available_runs, raw_llm_output, code_table],
         )
 
