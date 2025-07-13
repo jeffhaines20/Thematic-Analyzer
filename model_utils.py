@@ -146,23 +146,25 @@ def make_llm(model, tokenizer, temperature=0, token_limit=-1):
     return llm
 
 
-def log_to_hf_dataset(new_row, repo_id):
+def log_model_performance(new_row: dict):
     token = os.getenv("HF_WRITE_TOKEN")
+    repo_id = "jeffhaines/thematic-analysis-model-performance-log"
 
-    # Load existing dataset
+    # Try to load existing dataset
     try:
         ds = load_dataset(repo_id, split="train", use_auth_token=token)
         df = ds.to_pandas()
-    except:
+    except Exception as e:
+        print("⚠️ Couldn't load dataset. Starting fresh.")
         df = pd.DataFrame()
 
-    # Append new row
+    # Append the new row
     df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
 
-    # Push back to Hub
-    new_ds = Dataset.from_pandas(df)
-    new_ds.push_to_hub(repo_id, token=token)
-    print("✅ Logged new row.")
+    # Convert to HF dataset and push
+    updated_ds = Dataset.from_pandas(df)
+    updated_ds.push_to_hub(repo_id, token=token)
+    print("✅ Model performance row pushed to dataset.")
 
 
 @GPU(duration=120)
@@ -279,8 +281,7 @@ def code(selected_model, file_input, n_codes=-1, temperature=0, user_prompt='', 
                "Model": selected_model
                }
 
-        repo_id = "jeffhaines/thematic-analyzer-model-metrics-log"
-        log_to_hf_dataset(new_row, repo_id)
+        log_to_hf_dataset(new_row)
 
     yield highlighted_html, code_dict, session_runs, coding_status, run_selector_update, run_selector_update, codes, code_table
 
