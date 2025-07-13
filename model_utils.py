@@ -168,9 +168,10 @@ def log_model_performance(new_row: dict):
 
 
 @GPU(duration=120)
-def code(selected_model, file_input, n_codes=-1, temperature=0, user_prompt='', use_example=False, session_runs=[], token_limit=-1, chunk_size=1024, batch_size=1, track_performance=False):
+def code(selected_model, file_input, n_codes=-1, temperature=0, user_prompt='', use_example=False, session_runs=[], token_limit=-1, chunk_size=1024, track_performance=False):
     global model, tokenizer
-    
+
+    batch_size = 1
     # record start time to evaluate performance
     print(f"Trackperformance={track_performance}")
     start = time.perf_counter()
