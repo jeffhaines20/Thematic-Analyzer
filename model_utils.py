@@ -168,12 +168,11 @@ def log_model_performance(new_row: dict):
 
 
 @GPU(duration=120)
-def code(selected_model, file_input, n_codes=-1, temperature=0, user_prompt='', use_example=False, session_runs=[], token_limit=-1, chunk_size=1024, track_performance=False):
+def code(selected_model, file_input, n_codes=0, temperature=0, user_prompt='', use_example=False, session_runs=[], token_limit=-1, chunk_size=1024, track_performance=False):
     global model, tokenizer
 
     batch_size = 1
     # record start time to evaluate performance
-    print(f"Trackperformance={track_performance}")
     start = time.perf_counter()
 
     if session_runs is None:
@@ -223,7 +222,7 @@ def code(selected_model, file_input, n_codes=-1, temperature=0, user_prompt='', 
     else:
         full_text = ta.load_doc(file_input)
 
-    n_codes = int(n_codes * 0.75) #align user-given number of codes with codes per chunk given to llm
+    n_codes_corrected = int(n_codes * 0.75) #align user-given number of codes with codes per chunk given to llm
     
     llm = make_llm(model, tokenizer, temperature=temperature, token_limit=token_limit)
 
@@ -233,7 +232,7 @@ def code(selected_model, file_input, n_codes=-1, temperature=0, user_prompt='', 
         codes = []
 
         def collect_codes():
-            for output in ta.code_text(full_text, tokenizer, code_chain, n_codes=n_codes, chunk_size=chunk_size, user_prompt=user_prompt, batch_size=batch_size):
+            for output in ta.code_text(full_text, tokenizer, code_chain, n_codes=n_codes_corrected, chunk_size=chunk_size, user_prompt=user_prompt, batch_size=batch_size):
                 codes.append(output)
                 yield None, None, session_runs, None, None, None, codes, None
 
@@ -273,6 +272,7 @@ def code(selected_model, file_input, n_codes=-1, temperature=0, user_prompt='', 
  
         new_row = {"New Tokens": token_limit,
                "Chunk Size": chunk_size,
+               "N Codes": n_codes,
                "Codes Generated": len(code_dict.keys()),
                "Percentage of Text Covered": perc_covered,
                "Time (Seconds)": end - start,
@@ -280,10 +280,10 @@ def code(selected_model, file_input, n_codes=-1, temperature=0, user_prompt='', 
                "Characters per Second": text_length/(end-start),
                "Date and Time": datetime.now().strftime('%H:%M:%S'),
                "User Prompt": user_prompt,
-               "Model": selected_model
+               "Model": selected_model,
+               "Batch Size": batch_size
                }
 
-        print(f"New data is {new_row}")
         log_model_performance(new_row)
 
     yield highlighted_html, code_dict, session_runs, coding_status, run_selector_update, run_selector_update, codes, code_table
