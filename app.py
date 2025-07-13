@@ -62,7 +62,7 @@ def on_aggregate():
     
 # Gradio Interface
 # check theming guide: https://www.gradio.app/guides/theming-guide
-with gr.Blocks(title="Thematic Analyzer", theme=gr.themes.Glass(theme_mode="dark")) as demo:
+with gr.Blocks(title="Thematic Analyzer", theme=gr.themes.Glass()) as demo:
     gr.Markdown("## 🧠 Thematic Analyzer")
 
     # objects
