@@ -182,6 +182,7 @@ with gr.Blocks(title="Thematic Analyzer", theme=gr.themes.Glass()) as demo:
                             upload_status = gr.Textbox(label="Upload Status", visible=False)
                         
                         full_text = gr.Textbox(label="Original Text", lines=10, interactive=False)
+                        
                         file_input.change(ta.load_doc, inputs=file_input, outputs=full_text).then(
                           ta.update_upload_status, inputs=file_input, outputs=[upload_status, upload_status]
                         )
@@ -219,6 +220,7 @@ with gr.Blocks(title="Thematic Analyzer", theme=gr.themes.Glass()) as demo:
                                 code_highlight_type = gr.State("Codes")
                                 download_coded_text_button = gr.Button("Download Highlighted Document")
                             highlighted_code_output = gr.File(label="Click to Download")
+                            
                             download_coded_text_button.click(
                                 fn=du.export_html,
                                 inputs=[html_code_output, code_highlight_type, html_download_format, default_model_state],
@@ -250,12 +252,20 @@ with gr.Blocks(title="Thematic Analyzer", theme=gr.themes.Glass()) as demo:
                         theme_status = gr.Textbox(label="Status", visible=True)
             
                         with gr.Accordion("📚 Text Annotated By Theme", open=False):
+                            # Edit or Remove Themes
+                            with gr.Accordion("✏️ Theme Editor", open=False):
+                                theme_table = gr.Dataframe(label="📋 Themes", interactive=True) 
+                                with gr.Row():
+                                    save_theme_changes_button = gr.Button("Save Changes and Update Output")
+                                    cancel_theme_change_button = gr.Button("Cancel all Changes and Reload the Table")
+                                    theme_editing_status = gr.Textbox(label="Code Editing Status", visible=False)
                             html_highlighted_by_theme = gr.HTML(label="Text Clustered by Theme")
                             with gr.Row():
                                 theme_html_download_format = gr.Dropdown(["HTML", "Word (.docx)"], value="HTML", label="Download Format")
                                 theme_highlight_type = gr.State("Themes")
                                 download_theme_html_button = gr.Button("Download Highlighted Document")
                             highlighted_theme_output = gr.File(label="Click to Download")
+                            
                             download_theme_html_button.click(
                                 fn=du.export_html,
                                 inputs=[html_highlighted_by_theme, theme_highlight_type, theme_html_download_format, default_model_state],
@@ -267,10 +277,23 @@ with gr.Blocks(title="Thematic Analyzer", theme=gr.themes.Glass()) as demo:
                             network_download_format = gr.State("HTML")
                             download_network_button = gr.Button("Download Network Graph")
                             theme_code_network_output = gr.File(label="Click to Download")
+                            
                             download_network_button.click(
                                 fn=du.export_html,
                                 inputs=[theme_code_network_html, network_highlight_type, network_download_format],
                                 outputs=[theme_code_network_output])
+
+                            save_theme_changes_button.click(
+                                fn=du.save_theme_changes,
+                                inputs=[full_text, theme_table, theme_dict_state, code_dict_state],
+                                outputs=[theme_editing_status, theme_editing_status, theme_dict_state, theme_table, theme_code_network_html, html_highlighted_by_theme]
+                            )
+
+                            cancel_theme_change_button.click(
+                                fn=du.cancel_theme_changes,
+                                inputs=[theme_dict_state],
+                                outputs=[theme_editing_status, theme_editing_status, theme_table]
+                            )
 
                     with gr.Tab("📝 Summarize Themes"):
                         with gr.Row():
@@ -602,7 +625,7 @@ with gr.Blocks(title="Thematic Analyzer", theme=gr.themes.Glass()) as demo:
     cluster_event = cluster_button.click(
             fn=model_utils.cluster,
             inputs=[full_text, code_dict_state, max_themes, temperature, use_example, session_runs, token_limit, chunk_size],
-            outputs=[theme_dict_state, theme_code_network_html, html_highlighted_by_theme, session_runs, theme_status, run_selector, available_runs],
+            outputs=[theme_dict_state, theme_code_network_html, html_highlighted_by_theme, session_runs, theme_status, run_selector, available_runs, theme_table],
         )
 
     cluster_stop_button.click(fn=None, cancels=[cluster_event]).then(
