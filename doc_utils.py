@@ -53,7 +53,7 @@ def export_html(html_obj, highlight_type="Output", download_type=".html", author
 # Save function: update theme_dict from table
 def save_theme_changes(full_text, table, theme_dict, code_dict):
     new_dict = {}
-    print(f"Table columns are {table.columns}")
+
     for _, row in table.iterrows():
         theme, code = row["Theme"], row["Code"]
 
