@@ -50,6 +50,38 @@ def export_html(html_obj, highlight_type="Output", download_type=".html", author
         raise ValueError(f"Unsupported file type: {download_type}")
 
 
+# Save function: update theme_dict from table
+def save_theme_changes(full_text, table, theme_dict, code_dict):
+    new_dict = {}
+    print(f"Table columns are {table.columns}")
+    for _, row in table.iterrows():
+        theme, code = row["Theme"], row["Code"]
+
+        if theme not in new_dict:
+            new_dict[theme] = []
+        new_dict[theme].append(code)
+    
+    theme_editing_status = f"✅ Changes saved."
+    
+    theme_table = viz.theme_dict_to_df(new_dict)
+    # make network graph
+    theme_network_html = viz.visualize_theme_network_for_gradio(code_dict, new_dict)
+
+    # color-code text by theme
+    html_highlighted_by_theme = viz.highlight_text_by_theme(full_text=full_text,
+        code_dict=code_dict,
+        theme_dict=new_dict)
+
+    return theme_editing_status, gr.update(visible=True), new_dict, theme_table, theme_network_html, html_highlighted_by_theme
+
+
+# Cancel function: reload table from theme_dict
+def cancel_theme_changes(theme_dict):
+    theme_table = viz.theme_dict_to_df(theme_dict)
+    theme_editing_status = f"Changes canceled. Reverting to previous state."
+    return theme_editing_status, gr.update(visible=True), theme_table
+    
+
 # Save function: update code_dict from table
 def save_code_changes(full_text, table, code_dict):
     new_dict = {}
