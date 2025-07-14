@@ -42,7 +42,7 @@ def experimental_plots():
           x="Characters per Second",
           y="Percentage of Text Covered",
           color="Model",
-          hover_data=["New Tokens", "Chunk Size", "Time (Seconds)", "Percentage of Text Covered", "Codes Generated", "User Prompt"],
+          hover_data=["New Tokens", "Chunk Size", "Time (Seconds)", "Percentage of Text Covered", "Codes Generated", "User Prompt", "Date and Time"],
           title="Length/Time vs. % Covered",
           color_continuous_scale='Viridis_r',  # <- the "_r" reverses the color scale
     )
@@ -76,6 +76,14 @@ def experimental_plots():
     ax.invert_yaxis()
 
     return dynamic_plot, plotly_plot, fig
+
+
+def theme_dict_to_df(theme_dict):
+    data = []
+    for theme in theme_dict.keys():
+        for code in theme_dict[theme]:
+            data.append({"Theme": theme, "Code": code})
+    return pd.DataFrame(data)
 
 
 def code_dict_to_df(code_dict):
