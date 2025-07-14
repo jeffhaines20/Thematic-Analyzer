@@ -310,7 +310,7 @@ def cluster(full_text, code_dict, max_themes, temperature, use_example, session_
                     code_dict=code_dict,
                     theme_dict=theme_dict)
         except Exception as e:
-            yield None, None, None, session_runs, f"❌ Error loading example theme data: {str(e)}", None, None
+            yield None, None, None, session_runs, f"❌ Error loading example theme data: {str(e)}", None, None, None
             return
 
         # save the results locally
@@ -321,17 +321,18 @@ def cluster(full_text, code_dict, max_themes, temperature, use_example, session_
 
         session_runs.append(clustering_result)
         theme_status = "✅ Successfully loaded example themes."
+        theme_table = viz.theme_dict_to_df(theme_dict)
         run_selector_update = update_run_selector(session_runs)
 
-        yield theme_dict, theme_network_html, html_highlighted_by_theme, session_runs, theme_status, run_selector_update, run_selector_update
+        yield theme_dict, theme_network_html, html_highlighted_by_theme, session_runs, theme_status, run_selector_update, run_selector_update, theme_table
         return
 
     # error handling
     if code_dict is None:
-        yield None, None, None, session_runs, f"❌ Error: You must code the text first.", None, None
+        yield None, None, None, session_runs, f"❌ Error: You must code the text first.", None, None, None
         return
     elif len(code_dict.keys()) == 0:
-        yield None, None, None, session_runs, f"❌ Error: You must code the text first.", None, None
+        yield None, None, None, session_runs, f"❌ Error: You must code the text first.", None, None, None
         return
 
     llm = make_llm(model, tokenizer, temperature = temperature, token_limit=token_limit)
@@ -343,18 +344,18 @@ def cluster(full_text, code_dict, max_themes, temperature, use_example, session_
         def collect_themes():
             for output in ta.develop_themes("|".join([key for key in code_dict.keys()]), tokenizer, cluster_chain, max_themes = max_themes, chunk_size=chunk_size):
                 themes.extend(output)
-                yield None, themes, session_runs, None, None, None, None
+                yield None, themes, session_runs, None, None, None, None, None
 
         yield from collect_themes()
         #themes = ta.develop_themes("|".join([key for key in code_dict.keys()]), tokenizer, cluster_chain, max_themes = max_themes, chunk_size=chunk_size)
     
     except Exception as e:
-        yield None, None, None, session_runs, f"❌ Error in clustering using LLaMA: {str(e)}.", None, None
+        yield None, None, None, session_runs, f"❌ Error in clustering using LLaMA: {str(e)}.", None, None, None
         return
     try:
         theme_dict = ta.parse_themes(themes)
     except Exception as e:
-        yield None, None, None, session_runs, f"❌ Error in parsing themes: {str(e)}.", None, None
+        yield None, None, None, session_runs, f"❌ Error in parsing themes: {str(e)}.", None, None, None
         return
 
     # save the results locally
@@ -364,6 +365,7 @@ def cluster(full_text, code_dict, max_themes, temperature, use_example, session_
         }
 
     session_runs.append(clustering_result)
+    theme_table = viz.theme_dict_to_df(theme_dict)
     theme_status = "✅ Successfully clustered codes into themes."
 
     # make network graph
@@ -377,7 +379,7 @@ def cluster(full_text, code_dict, max_themes, temperature, use_example, session_
     # need to update the run selectors
     run_selector_update = update_run_selector(session_runs)
 
-    yield theme_dict, theme_network_html, html_highlighted_by_theme, session_runs, theme_status, run_selector_update, run_selector_update
+    yield theme_dict, theme_network_html, html_highlighted_by_theme, session_runs, theme_status, run_selector_update, run_selector_update, theme_table
 
 
 @GPU(duration=120)
