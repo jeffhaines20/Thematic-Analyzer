@@ -278,7 +278,7 @@ def code(selected_model, file_input, n_codes=0, temperature=0, user_prompt='', u
                "Time (Seconds)": end - start,
                "Text Length": text_length,
                "Characters per Second": text_length/(end-start),
-               "Date and Time": datetime.now().strftime('%H:%M:%S'),
+               "Date and Time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                "User Prompt": user_prompt,
                "Model": selected_model,
                "Batch Size": batch_size
