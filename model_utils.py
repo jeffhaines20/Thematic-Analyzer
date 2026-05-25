@@ -11,8 +11,12 @@ import gc
 import pickle
 import gradio as gr
 from datetime import datetime
-from transformers.pipelines.text2text_generation import ReturnType
 from spaces import GPU
+
+try:
+    from transformers.pipelines.text2text_generation import ReturnType
+except ModuleNotFoundError:
+    from transformers.pipelines.deprecated.text2text_generation import ReturnType
 
 # Local Dependencies
 import viz
