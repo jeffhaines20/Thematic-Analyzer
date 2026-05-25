@@ -12,6 +12,7 @@ short_description: 'Conducts thematic analysis of documents using an LLM. '
 ---
 # 🧠 Thematic Analysis with LLMs
 
+https://huggingface.co/spaces/jeffhaines/Thematic-Analyzer 
 This Hugging Face Space allows you to upload a document and automatically extract, code, and visualize themes using an LLM (default is LLaMA 3 8B). The app supports multi-code tagging, theme-to-color mapping, and interactive tooltips with blended highlighting for overlapping themes.
 
 ## 🚀 Features
